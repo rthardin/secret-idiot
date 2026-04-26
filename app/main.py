@@ -89,7 +89,7 @@ async def manifest():
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse(request, "index.html")
 
 
 @app.post("/create")
@@ -116,7 +116,7 @@ async def join_page(request: Request, join_code: str, db: Session = Depends(get_
     if not room:
         raise HTTPException(404, "Room not found")
     return templates.TemplateResponse(
-        "join.html", {"request": request, "join_code": join_code.upper(), "room": room}
+        request, "join.html", context={"join_code": join_code.upper(), "room": room}
     )
 
 
@@ -163,9 +163,9 @@ async def game_page(
         return RedirectResponse(f"/join/{join_code.upper()}")
 
     return templates.TemplateResponse(
+        request,
         "game.html",
-        {
-            "request": request,
+        context={
             "room": room,
             "player": player,
             "join_code": join_code.upper(),
