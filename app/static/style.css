@@ -400,6 +400,57 @@ select {
   outline: none;
 }
 
+/* ── Burns ─────────────────────────────────────────────────────── */
+.burn-row {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+.burn-row:last-child { border-bottom: none; }
+.burn-row-vetoed { opacity: 0.5; }
+
+.burn-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+.burn-accuser { font-weight: 600; }
+.burn-arrow   { color: var(--text-dim); }
+.burn-target  { font-weight: 600; }
+
+.burn-correct { font-size: 0.75rem; color: var(--accent2); font-weight: 600; text-transform: uppercase; }
+.burn-wrong   { font-size: 0.75rem; color: var(--text-dim); text-transform: uppercase; }
+.burn-vetoed-badge {
+  font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+  color: var(--warning); border: 1px solid var(--warning);
+  border-radius: 100px; padding: 1px 6px; letter-spacing: 0.05em;
+}
+
+.burn-guess {
+  font-style: italic;
+  color: var(--text-dim);
+  font-size: 0.85rem;
+  margin-top: 4px;
+  padding-left: 2px;
+}
+
+.veto-btn {
+  margin-left: auto;
+  background: none;
+  border: 1px solid var(--surface2);
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.78rem;
+  padding: 2px 8px;
+  border-radius: 6px;
+  transition: border-color 0.15s, color 0.15s;
+}
+.veto-btn:hover { border-color: var(--warning); color: var(--warning); }
+
+/* ── Home link ─────────────────────────────────────────────────── */
+.home-link { color: var(--accent); text-decoration: underline; }
+
 /* ── Mission history (game over) ───────────────────────────────── */
 .history-row {
   padding: 12px 0;

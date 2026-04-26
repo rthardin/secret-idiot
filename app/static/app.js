@@ -130,9 +130,28 @@
       FALSE_ACCUSATION: "False Accusation",
     };
     const hRows = (p.history || []).map((r) => {
-      const chips = (r.outcomes || []).map((o) =>
-        `<span class="outcome-chip outcome-${o.type}">${outcomeLabels[o.type] || o.type}</span>`
-      ).join(" ");
+      const chips = (r.outcomes || []).map((o) => {
+        const vetoStyle = o.vetoed ? ' style="opacity:0.4;text-decoration:line-through;"' : "";
+        return `<span class="outcome-chip outcome-${o.type}"${vetoStyle}>${outcomeLabels[o.type] || o.type}</span>`;
+      }).join(" ");
+      const burnDetails = (r.burns || []).map((b) => {
+        const correctTag = b.correct
+          ? `<span class="burn-correct">correct</span>`
+          : `<span class="burn-wrong">wrong</span>`;
+        const vetoedTag = b.vetoed ? `<span class="burn-vetoed-badge">vetoed</span>` : "";
+        const guess = b.mission_guess
+          ? `<div class="burn-guess">"${esc(b.mission_guess)}"</div>`
+          : "";
+        return `<div class="burn-row${b.vetoed ? " burn-row-vetoed" : ""}">
+          <div class="burn-header">
+            <span class="burn-accuser">${esc(b.accuser_name)}</span>
+            <span class="burn-arrow">→</span>
+            <span class="burn-target">${esc(b.target_name)}</span>
+            ${correctTag}${vetoedTag}
+          </div>
+          ${guess}
+        </div>`;
+      }).join("");
       return `<div class="history-row">
         <div class="history-header">
           <span class="history-round">Round ${r.round_number}</span>
@@ -140,6 +159,7 @@
         </div>
         <p class="history-mission">${esc(r.mission)}</p>
         <div style="margin-top:6px;">${chips}</div>
+        ${burnDetails ? `<div style="margin-top:8px;">${burnDetails}</div>` : ""}
       </div>`;
     }).join("");
     hist.innerHTML = `<h2>Mission History</h2>${hRows}`;
@@ -366,10 +386,50 @@
     const chips = (results.outcomes || []).map((o) => {
       const label = outcomeLabels[o.type] || o.type;
       const detail = o.accuser_name ? ` — ${esc(o.accuser_name)}` : "";
-      return `<span class="outcome-chip outcome-${o.type}">${label}${detail}</span>`;
+      const vetoStyle = o.vetoed ? ' style="opacity:0.4;text-decoration:line-through;"' : "";
+      return `<span class="outcome-chip outcome-${o.type}"${vetoStyle}>${label}${detail}</span>`;
     }).join(" ");
     document.getElementById("outcomes-card").innerHTML =
       `<h2>Outcome</h2><div style="display:flex;flex-wrap:wrap;gap:8px;">${chips}</div>`;
+
+    // Burns section
+    const burnsCard = document.getElementById("burns-card");
+    const burns = results.burns || [];
+    if (burns.length > 0) {
+      const burnRows = burns.map((b) => {
+        const correctTag = b.correct
+          ? `<span class="burn-correct">correct</span>`
+          : `<span class="burn-wrong">wrong</span>`;
+        const vetoedTag = b.vetoed ? `<span class="burn-vetoed-badge">vetoed</span>` : "";
+        const guess = b.mission_guess
+          ? `<div class="burn-guess">"${esc(b.mission_guess)}"</div>`
+          : "";
+        const vetoBtn = IS_HOST
+          ? `<button class="veto-btn" data-burn-id="${esc(b.id)}">${b.vetoed ? "Un-veto" : "Veto"}</button>`
+          : "";
+        return `<div class="burn-row${b.vetoed ? " burn-row-vetoed" : ""}">
+          <div class="burn-header">
+            <span class="burn-accuser">${esc(b.accuser_name)}</span>
+            <span class="burn-arrow">→</span>
+            <span class="burn-target">${esc(b.target_name)}</span>
+            ${correctTag}${vetoedTag}
+            ${vetoBtn}
+          </div>
+          ${guess}
+        </div>`;
+      }).join("");
+      burnsCard.innerHTML = `<h2>Burns</h2>${burnRows}`;
+      burnsCard.classList.remove("hidden");
+
+      burnsCard.querySelectorAll(".veto-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          send("VETO_BURN", { report_id: btn.dataset.burnId });
+        });
+      });
+    } else {
+      burnsCard.classList.add("hidden");
+      burnsCard.innerHTML = "";
+    }
 
     const lbCard = document.getElementById("leaderboard-card");
     const deltaRows = (results.score_deltas || []).map((d) => {
@@ -432,6 +492,11 @@
   on("force-results-btn", "click", () => send("FORCE_RESULTS"));
   on("force-debrief-btn", "click", () => {
     if (confirm("End the round early and open debrief?")) send("FORCE_DEBRIEF");
+  });
+  on("abandon-round-btn", "click", () => {
+    if (confirm("Abandon this round and retry with newly assigned roles? No points will be awarded.")) {
+      send("ABANDON_ROUND");
+    }
   });
   on("end-game-btn", "click", () => {
     if (confirm("End the game and show the final leaderboard? This cannot be undone.")) {

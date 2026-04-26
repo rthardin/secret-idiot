@@ -78,6 +78,7 @@
     <div class="host-controls">
       <button id="pause-btn" class="btn btn-ghost">Pause Round</button>
       <button id="force-debrief-btn" class="btn btn-ghost btn-danger">End Round Early</button>
+      <button id="abandon-round-btn" class="btn btn-ghost btn-danger">Abandon &amp; Retry Round</button>
     </div>
     {% endif %}
   </div>
@@ -126,6 +127,7 @@
 
     <div id="reveal-card" class="card"></div>
     <div id="outcomes-card" class="card"></div>
+    <div id="burns-card" class="card hidden"></div>
     <div id="leaderboard-card" class="card"></div>
 
     {% if player.is_host %}
@@ -160,7 +162,7 @@
     </header>
     <div id="gameover-leaderboard" class="card"></div>
     <div id="gameover-history" class="card"></div>
-    <p class="hint centered-text">Thanks for playing! Create a new room to play again.</p>
+    <p class="hint centered-text">Thanks for playing! <a href="/" class="home-link">Create a new room</a> to play again.</p>
   </div>
 
 </div><!-- #game-root -->

@@ -46,11 +46,12 @@ def assign_roles(db: Session, round_id: str, room_id: str) -> list[Assignment]:
     return db.query(Assignment).filter_by(round_id=round_id).all()
 
 
-def calculate_scores(db: Session, round_id: str) -> tuple[dict, list]:
+def calculate_scores(db: Session, round_id: str) -> tuple[dict, list, list]:
     """
-    Returns (score_deltas, outcomes).
+    Returns (score_deltas, outcomes, burns).
     score_deltas: {player_id: int}
-    outcomes: list of dicts describing what happened (for display)
+    outcomes: list of dicts for outcome chips
+    burns: list of dicts with full burn details (including vetoed state)
     """
     reports = db.query(DebriefReport).filter_by(round_id=round_id).all()
     assignments = db.query(Assignment).filter_by(round_id=round_id).all()
@@ -59,7 +60,7 @@ def calculate_scores(db: Session, round_id: str) -> tuple[dict, list]:
     witness_asgn = next((a for a in assignments if a.role == Role.WITNESS), None)
 
     if not agent_asgn:
-        return {}, [{"type": "NO_AGENT"}]
+        return {}, [{"type": "NO_AGENT"}], []
 
     agent_id = agent_asgn.player_id
     witness_id = witness_asgn.player_id if witness_asgn else None
@@ -73,26 +74,48 @@ def calculate_scores(db: Session, round_id: str) -> tuple[dict, list]:
 
     deltas: dict[str, int] = {}
     outcomes: list[dict] = []
+    burns: list[dict] = []
     correct_burns: list[DebriefReport] = []
 
     for burn in burn_reports:
         accuser = db.query(Player).filter_by(id=burn.player_id).first()
         target = db.query(Player).filter_by(id=burn.target_id).first()
-        if burn.target_id == agent_id:
+        is_correct = burn.target_id == agent_id
+        vetoed = bool(burn.vetoed)
+
+        burns.append({
+            "id": burn.id,
+            "accuser_name": accuser.name if accuser else "?",
+            "accuser_id": burn.player_id,
+            "target_name": target.name if target else "?",
+            "target_id": burn.target_id,
+            "correct": is_correct,
+            "vetoed": vetoed,
+            "mission_guess": burn.mission_guess,
+        })
+
+        outcome_base = {
+            "burn_id": burn.id,
+            "accuser_name": accuser.name if accuser else "?",
+            "vetoed": vetoed,
+        }
+
+        if vetoed:
+            outcome_type = "SLOPPY_AGENT" if is_correct else "FALSE_ACCUSATION"
+            if not is_correct:
+                outcome_base["target_name"] = target.name if target else "?"
+            outcomes.append({"type": outcome_type, **outcome_base})
+            continue
+
+        if is_correct:
             deltas[burn.player_id] = deltas.get(burn.player_id, 0) + 1
             deltas[agent_id] = deltas.get(agent_id, 0) - 1
             correct_burns.append(burn)
-            outcomes.append({
-                "type": "SLOPPY_AGENT",
-                "accuser_name": accuser.name if accuser else "?",
-            })
+            outcomes.append({"type": "SLOPPY_AGENT", **outcome_base})
         else:
             deltas[burn.player_id] = deltas.get(burn.player_id, 0) - 1
-            outcomes.append({
-                "type": "FALSE_ACCUSATION",
-                "accuser_name": accuser.name if accuser else "?",
-                "target_name": target.name if target else "?",
-            })
+            outcome_base["target_name"] = target.name if target else "?"
+            outcomes.append({"type": "FALSE_ACCUSATION", **outcome_base})
 
     if not correct_burns:
         if agent_succeeded and witness_saw:
@@ -106,4 +129,4 @@ def calculate_scores(db: Session, round_id: str) -> tuple[dict, list]:
         else:
             outcomes.append({"type": "MISSION_FAILED"})
 
-    return deltas, outcomes
+    return deltas, outcomes, burns

@@ -66,6 +66,9 @@ def _migrate_db():
         room_cols = [c["name"] for c in inspector.get_columns("rooms")]
         if "game_over_json" not in room_cols:
             conn.execute(text("ALTER TABLE rooms ADD COLUMN game_over_json JSON"))
+        report_cols = [c["name"] for c in inspector.get_columns("debrief_reports")]
+        if "vetoed" not in report_cols:
+            conn.execute(text("ALTER TABLE debrief_reports ADD COLUMN vetoed BOOLEAN DEFAULT 0"))
         conn.commit()
 
 
@@ -283,7 +286,7 @@ async def _finish_debrief(room_id: str, db: Session):
     if not rnd:
         return
 
-    deltas, outcomes = calculate_scores(db, rnd.id)
+    deltas, outcomes, burns = calculate_scores(db, rnd.id)
 
     for pid, delta in deltas.items():
         p = db.query(Player).filter_by(id=pid).first()
@@ -301,6 +304,7 @@ async def _finish_debrief(room_id: str, db: Session):
         "witness_name": witness_asgn.player.name if witness_asgn else None,
         "mission": agent_asgn.mission.description if (agent_asgn and agent_asgn.mission) else None,
         "outcomes": outcomes,
+        "burns": burns,
         "score_deltas": [
             {
                 "player_id": p.id,
@@ -458,6 +462,70 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
             db.commit()
             await _broadcast_state(room.id, db)
 
+    elif action == "VETO_BURN":
+        if not player.is_host or room.current_state != RoomState.ROUND_SUMMARY:
+            return
+        report_id = payload.get("report_id")
+        rnd = (
+            db.query(Round)
+            .filter_by(room_id=room.id)
+            .order_by(Round.round_number.desc())
+            .first()
+        )
+        if not rnd or not rnd.results_json:
+            return
+        report = db.query(DebriefReport).filter_by(id=report_id, round_id=rnd.id).first()
+        if not report or report.report_type != ReportType.BURN:
+            return
+
+        # Un-apply old score deltas before recalculating
+        old_deltas = {d["player_id"]: d["delta"] for d in rnd.results_json.get("score_deltas", [])}
+        all_players = db.query(Player).filter_by(room_id=room.id).all()
+        for p in all_players:
+            p.total_score -= old_deltas.get(p.id, 0)
+
+        report.vetoed = not bool(report.vetoed)
+        db.flush()
+
+        deltas, outcomes, burns = calculate_scores(db, rnd.id)
+
+        for p in all_players:
+            p.total_score += deltas.get(p.id, 0)
+
+        players_sorted = sorted(all_players, key=lambda p: p.total_score, reverse=True)
+        results = {
+            **rnd.results_json,
+            "outcomes": outcomes,
+            "burns": burns,
+            "score_deltas": [
+                {"player_id": p.id, "name": p.name, "delta": deltas.get(p.id, 0), "total": p.total_score}
+                for p in players_sorted
+            ],
+            "leaderboard": [{"name": p.name, "score": p.total_score} for p in players_sorted],
+        }
+        rnd.results_json = results
+        db.commit()
+
+        await manager.broadcast(room.id, {"event": "ROUND_RESULTS", "payload": results})
+
+    elif action == "ABANDON_ROUND":
+        if not player.is_host or room.current_state not in (RoomState.ROUND_ACTIVE, RoomState.PAUSED):
+            return
+        _cancel_timer(room.id)
+        rnd = (
+            db.query(Round)
+            .filter_by(room_id=room.id)
+            .order_by(Round.round_number.desc())
+            .first()
+        )
+        saved_duration_ms = (rnd.duration_ms or ROUND_DURATION_MS) if rnd else ROUND_DURATION_MS
+        if rnd:
+            db.query(DebriefReport).filter_by(round_id=rnd.id).delete()
+            db.query(Assignment).filter_by(round_id=rnd.id).delete()
+            db.delete(rnd)
+            db.commit()
+        await _start_round(room, db, duration_ms=saved_duration_ms)
+
     elif action == "END_GAME":
         if not player.is_host or room.current_state != RoomState.ROUND_SUMMARY:
             return
@@ -554,11 +622,13 @@ async def _end_game(room: Room, db: Session):
     for rnd in all_rounds:
         agent_asgn = db.query(Assignment).filter_by(round_id=rnd.id, role=Role.AGENT).first()
         outcomes = rnd.results_json.get("outcomes", []) if rnd.results_json else []
+        burns = rnd.results_json.get("burns", []) if rnd.results_json else []
         history.append({
             "round_number": rnd.round_number,
             "agent_name": agent_asgn.player.name if agent_asgn else "?",
             "mission": agent_asgn.mission.description if (agent_asgn and agent_asgn.mission) else "?",
             "outcomes": outcomes,
+            "burns": burns,
         })
 
     players = (

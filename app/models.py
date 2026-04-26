@@ -120,6 +120,8 @@ class DebriefReport(Base):
     target_id = Column(String, ForeignKey("players.id"), nullable=True)
     mission_guess = Column(Text, nullable=True)
 
+    vetoed = Column(Boolean, default=False)
+
     round = relationship("Round", back_populates="reports")
     player = relationship("Player", back_populates="reports", foreign_keys=[player_id])
     target = relationship("Player", foreign_keys=[target_id])
