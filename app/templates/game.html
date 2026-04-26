@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+{% block content %}
+<div id="game-root"
+     data-room-id="{{ room.id }}"
+     data-room-code="{{ join_code }}"
+     data-player-id="{{ player.id }}"
+     data-session-token="{{ player.session_token }}"
+     data-is-host="{{ 'true' if player.is_host else 'false' }}"
+     data-vapid-key="{{ vapid_public_key or '' }}">
+
+  <!-- ── LOBBY ─────────────────────────────────────────────────────────── -->
+  <div id="lobby-view" class="view hidden">
+    <header class="view-header">
+      <h1 class="logo">The Undercurrent</h1>
+      <p class="room-code-display">Room <strong>{{ join_code }}</strong></p>
+    </header>
+
+    <div class="card">
+      <h2>Players</h2>
+      <ul id="player-list" class="player-list"></ul>
+      <p id="player-count-msg" class="hint"></p>
+    </div>
+
+    <div class="card">
+      <p class="hint">Share this code with friends:</p>
+      <div class="join-code-big">{{ join_code }}</div>
+      <p class="hint small">or send them: <span id="join-url" class="monospace"></span></p>
+    </div>
+
+    {% if player.is_host %}
+    <div id="host-lobby-controls">
+      <button id="start-game-btn" class="btn btn-primary" disabled>Start Game</button>
+    </div>
+    {% else %}
+    <p class="hint centered-text">Waiting for the host to start…</p>
+    {% endif %}
+  </div>
+
+  <!-- ── ROUND ACTIVE ───────────────────────────────────────────────────── -->
+  <div id="round-view" class="view hidden">
+    <header class="view-header">
+      <span id="round-label">Round 1</span>
+      <span id="timer-display" class="timer">60:00</span>
+    </header>
+
+    <div id="role-card" class="role-card">
+      <div id="role-badge" class="role-badge"></div>
+      <div id="mission-block" class="mission-block hidden">
+        <p class="mission-label">Your Mission</p>
+        <p id="mission-text" class="mission-text"></p>
+      </div>
+      <div id="witness-block" class="mission-block hidden">
+        <p class="mission-label">The Agent</p>
+        <p id="witness-agent-name" class="mission-text" style="font-size:1.25rem;font-weight:700;"></p>
+        <p class="mission-label" style="margin-top:14px;">Their Mission</p>
+        <p id="witness-agent-mission" class="mission-text"></p>
+      </div>
+      <p id="witness-hint" class="role-hint hidden">Watch them — verify they complete it without giving them away.</p>
+      <p id="crowd-hint" class="role-hint hidden">Stay alert. If you spot suspicious behaviour, you can burn someone during the debrief.</p>
+    </div>
+
+    {% if player.is_host %}
+    <div class="host-controls">
+      <button id="pause-btn" class="btn btn-ghost">Pause Round</button>
+      <button id="force-debrief-btn" class="btn btn-ghost btn-danger">End Round Early</button>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- ── PAUSE OVERLAY ─────────────────────────────────────────────────── -->
+  <div id="pause-overlay" class="overlay hidden">
+    <div class="overlay-card">
+      <h2>⏸ Game Paused</h2>
+      <p>The host has paused the game.</p>
+      {% if player.is_host %}
+      <button id="resume-btn" class="btn btn-primary">Resume</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── DEBRIEF ────────────────────────────────────────────────────────── -->
+  <div id="debrief-view" class="view hidden">
+    <header class="view-header">
+      <h2>Debrief</h2>
+      <span id="debrief-round-label"></span>
+    </header>
+
+    <div class="card">
+      <div id="debrief-form-content"></div>
+      <button id="submit-debrief-btn" class="btn btn-primary">Submit Report</button>
+    </div>
+
+    <div id="waiting-for-others" class="card hidden">
+      <p class="hint">Report submitted. Waiting for others…</p>
+      <div id="debrief-progress" class="progress-bar-wrap">
+        <div id="debrief-progress-bar" class="progress-bar"></div>
+      </div>
+      <p id="debrief-progress-text" class="hint small"></p>
+      {% if player.is_host %}
+      <button id="force-results-btn" class="btn btn-ghost btn-danger">Force Results (Host)</button>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ── ROUND SUMMARY ─────────────────────────────────────────────────── -->
+  <div id="summary-view" class="view hidden">
+    <header class="view-header">
+      <h2>Results</h2>
+      <span id="summary-round-label"></span>
+    </header>
+
+    <div id="reveal-card" class="card"></div>
+    <div id="outcomes-card" class="card"></div>
+    <div id="leaderboard-card" class="card"></div>
+
+    {% if player.is_host %}
+    <button id="next-round-btn" class="btn btn-primary">Start Next Round</button>
+    {% else %}
+    <p class="hint centered-text">Waiting for the host to start the next round…</p>
+    {% endif %}
+  </div>
+
+</div><!-- #game-root -->
+
+<script src="/static/app.js"></script>
+{% endblock %}

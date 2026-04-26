@@ -1,0 +1,112 @@
+[
+  {
+    "description": "Work the word \"gazpacho\" into a conversation naturally.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "description": "Use the phrase \"statistically speaking\" in a sentence without anyone prompting you.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "Casually mention a fictional small town called \"Millbrook\" as if it's a real place you've been.",
+    "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "description": "Say the word \"luminous\" while describing something — anything.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "Work the phrase \"back in the day\" into a story you tell.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "Mention a made-up celebrity named \"Derek Voss\" as if everyone should know who that is.",
+    "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "description": "Use the word \"allegedly\" in a sentence about something completely mundane.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "Move a throw pillow to a completely different piece of furniture.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "description": "Rotate one item on a table or shelf so it faces a different direction.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "description": "Leave a random object (like a spoon or a remote) somewhere it clearly doesn't belong.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "Flip a small decorative item upside down somewhere subtle.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "Move an item from one room to another without anyone noticing.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "description": "Stack something on top of something else that it clearly doesn't belong on.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "description": "Get someone to count something out loud.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "Get two people to high-five without suggesting it directly.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "description": "Convince someone to sit somewhere different than their usual spot.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "Make someone laugh without being the one who told a joke.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "Get someone to check their phone within 10 minutes of the round starting.",
+    "difficulty": "EASY",
+    "category": "social"
+  },
+  {
+    "description": "Get someone else to bring you a drink without directly asking for one.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "description": "Get someone to start a sentence with \"One time...\"",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "Get the group to agree to do something (a walk, a game, a snack run) that wasn't already planned.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "description": "Make two separate people mention the same topic (e.g. the weather, a movie, food) within the hour without connecting them.",
+    "difficulty": "HARD",
+    "category": "social"
+  }
+]

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="screen centered">
+  <div class="hero">
+    <h1 class="logo">The Undercurrent</h1>
+    <p class="room-code-display">Room <strong>{{ join_code }}</strong></p>
+  </div>
+
+  <div class="card">
+    <h2>Enter Your Name</h2>
+    {% if room.current_state.value != "LOBBY" %}
+    <p class="error-msg">This game is already in progress. You can't join right now.</p>
+    <a href="/" class="btn btn-secondary">Back to Home</a>
+    {% else %}
+    <form method="POST" action="/join/{{ join_code }}">
+      <input type="text" name="player_name" placeholder="Your name" required maxlength="30" autocomplete="off">
+      <button type="submit" class="btn btn-primary">Join Game</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
