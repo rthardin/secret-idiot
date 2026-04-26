@@ -11,6 +11,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
+from sqlalchemy import inspect, text
 from .database import Base, SessionLocal, engine, get_db
 from .game import assign_roles, calculate_scores, load_missions
 from .models import (
@@ -47,11 +48,25 @@ round_timers = {}  # {room_id: asyncio.Task}
 @app.on_event("startup")
 async def startup():
     Base.metadata.create_all(bind=engine)
+    _migrate_db()
     db = SessionLocal()
     try:
         load_missions(db)
     finally:
         db.close()
+
+
+def _migrate_db():
+    """Add columns introduced after initial schema creation."""
+    inspector = inspect(engine)
+    with engine.connect() as conn:
+        round_cols = [c["name"] for c in inspector.get_columns("rounds")]
+        if "duration_ms" not in round_cols:
+            conn.execute(text("ALTER TABLE rounds ADD COLUMN duration_ms INTEGER DEFAULT 3600000"))
+        room_cols = [c["name"] for c in inspector.get_columns("rooms")]
+        if "game_over_json" not in room_cols:
+            conn.execute(text("ALTER TABLE rooms ADD COLUMN game_over_json JSON"))
+        conn.commit()
 
 
 # ---------------------------------------------------------------------------
@@ -202,15 +217,18 @@ async def websocket_endpoint(
 # Game flow helpers
 # ---------------------------------------------------------------------------
 
-async def _start_round(room: Room, db: Session):
+async def _start_round(room: Room, db: Session, duration_ms: int = None):
+    if duration_ms is None:
+        duration_ms = ROUND_DURATION_MS
+    duration_ms = max(5 * 60 * 1000, min(180 * 60 * 1000, duration_ms))
+
     round_number = db.query(Round).filter_by(room_id=room.id).count() + 1
-    rnd = Round(room_id=room.id, round_number=round_number)
+    rnd = Round(room_id=room.id, round_number=round_number, duration_ms=duration_ms)
     db.add(rnd)
     db.flush()
 
     assignments = assign_roles(db, rnd.id, room.id)
 
-    end_time = datetime.utcnow() + timedelta(milliseconds=ROUND_DURATION_MS)
     rnd.start_time = datetime.utcnow()
     rnd.paused_remaining_ms = None
     room.current_state = RoomState.ROUND_ACTIVE
@@ -232,7 +250,7 @@ async def _start_round(room: Room, db: Session):
 
     # Cancel any existing timer and start a new one
     _cancel_timer(room.id)
-    task = asyncio.create_task(_round_timer(room.id, ROUND_DURATION_MS))
+    task = asyncio.create_task(_round_timer(room.id, duration_ms))
     round_timers[room.id] = task
 
 
@@ -319,7 +337,8 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
                 {"event": "ERROR", "payload": {"message": "Need at least 3 players to start."}}
             )
             return
-        await _start_round(room, db)
+        duration_minutes = int(payload.get("duration_minutes", ROUND_DURATION_MS // 60000))
+        await _start_round(room, db, duration_ms=duration_minutes * 60 * 1000)
 
     elif action == "PAUSE_GAME":
         if not player.is_host or room.current_state != RoomState.ROUND_ACTIVE:
@@ -333,7 +352,8 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         )
         if rnd and rnd.start_time:
             elapsed_ms = (datetime.utcnow() - rnd.start_time).total_seconds() * 1000
-            rnd.paused_remaining_ms = max(0, ROUND_DURATION_MS - int(elapsed_ms))
+            round_dur = rnd.duration_ms or ROUND_DURATION_MS
+            rnd.paused_remaining_ms = max(0, round_dur - int(elapsed_ms))
         room.current_state = RoomState.PAUSED
         db.commit()
         await _broadcast_state(room.id, db)
@@ -347,9 +367,10 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
             .order_by(Round.round_number.desc())
             .first()
         )
-        remaining = rnd.paused_remaining_ms if (rnd and rnd.paused_remaining_ms) else ROUND_DURATION_MS
+        round_dur = (rnd.duration_ms or ROUND_DURATION_MS) if rnd else ROUND_DURATION_MS
+        remaining = rnd.paused_remaining_ms if (rnd and rnd.paused_remaining_ms) else round_dur
         if rnd:
-            rnd.start_time = datetime.utcnow() - timedelta(milliseconds=ROUND_DURATION_MS - remaining)
+            rnd.start_time = datetime.utcnow() - timedelta(milliseconds=round_dur - remaining)
             rnd.paused_remaining_ms = None
         room.current_state = RoomState.ROUND_ACTIVE
         db.commit()
@@ -421,7 +442,26 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
     elif action == "NEXT_ROUND":
         if not player.is_host or room.current_state != RoomState.ROUND_SUMMARY:
             return
-        await _start_round(room, db)
+        duration_minutes = int(payload.get("duration_minutes", ROUND_DURATION_MS // 60000))
+        await _start_round(room, db, duration_ms=duration_minutes * 60 * 1000)
+
+    elif action == "RENAME_PLAYER":
+        if not player.is_host or room.current_state != RoomState.LOBBY:
+            return
+        target_id = payload.get("player_id")
+        new_name = str(payload.get("new_name", "")).strip()[:30]
+        if not new_name or not target_id:
+            return
+        target = db.query(Player).filter_by(id=target_id, room_id=room.id).first()
+        if target:
+            target.name = new_name
+            db.commit()
+            await _broadcast_state(room.id, db)
+
+    elif action == "END_GAME":
+        if not player.is_host or room.current_state != RoomState.ROUND_SUMMARY:
+            return
+        await _end_game(room, db)
 
     elif action == "SAVE_PUSH_SUB":
         player.push_sub = payload.get("subscription")
@@ -468,7 +508,8 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
                 payload["time_remaining_ms"] = rnd.paused_remaining_ms or 0
             elif room.current_state == RoomState.ROUND_ACTIVE and rnd.start_time:
                 elapsed_ms = (datetime.utcnow() - rnd.start_time).total_seconds() * 1000
-                payload["time_remaining_ms"] = max(0, ROUND_DURATION_MS - int(elapsed_ms))
+                round_dur = rnd.duration_ms or ROUND_DURATION_MS
+                payload["time_remaining_ms"] = max(0, round_dur - int(elapsed_ms))
 
             asgn = db.query(Assignment).filter_by(
                 round_id=rnd.id, player_id=player_id
@@ -496,7 +537,44 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
     if room.current_state == RoomState.ROUND_SUMMARY and rnd and rnd.results_json:
         payload["results"] = rnd.results_json
 
+    if room.current_state == RoomState.GAME_OVER and room.game_over_json:
+        payload["game_over"] = room.game_over_json
+
     await manager.send(room_id, player_id, {"event": "ROOM_STATE_SYNC", "payload": payload})
+
+
+async def _end_game(room: Room, db: Session):
+    all_rounds = (
+        db.query(Round)
+        .filter_by(room_id=room.id)
+        .order_by(Round.round_number)
+        .all()
+    )
+    history = []
+    for rnd in all_rounds:
+        agent_asgn = db.query(Assignment).filter_by(round_id=rnd.id, role=Role.AGENT).first()
+        outcomes = rnd.results_json.get("outcomes", []) if rnd.results_json else []
+        history.append({
+            "round_number": rnd.round_number,
+            "agent_name": agent_asgn.player.name if agent_asgn else "?",
+            "mission": agent_asgn.mission.description if (agent_asgn and agent_asgn.mission) else "?",
+            "outcomes": outcomes,
+        })
+
+    players = (
+        db.query(Player)
+        .filter_by(room_id=room.id)
+        .order_by(Player.total_score.desc())
+        .all()
+    )
+    game_over = {
+        "leaderboard": [{"name": p.name, "score": p.total_score} for p in players],
+        "history": history,
+    }
+    room.game_over_json = game_over
+    room.current_state = RoomState.GAME_OVER
+    db.commit()
+    await manager.broadcast(room.id, {"event": "GAME_OVER", "payload": game_over})
 
 
 async def _broadcast_state(room_id: str, db: Session):

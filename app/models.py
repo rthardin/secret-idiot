@@ -16,6 +16,7 @@ class RoomState(str, PyEnum):
     DEBRIEF_PENDING = "DEBRIEF_PENDING"
     ROUND_SUMMARY = "ROUND_SUMMARY"
     PAUSED = "PAUSED"
+    GAME_OVER = "GAME_OVER"
 
 
 class Role(str, PyEnum):
@@ -47,6 +48,7 @@ class Room(Base):
     host_id = Column(String, nullable=True)
     current_state = Column(Enum(RoomState), default=RoomState.LOBBY, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
+    game_over_json = Column(JSON, nullable=True)
 
     players = relationship("Player", back_populates="room", foreign_keys="Player.room_id")
     rounds = relationship("Round", back_populates="room")
@@ -76,7 +78,7 @@ class Round(Base):
     round_number = Column(Integer, nullable=False)
     start_time = Column(DateTime, nullable=True)
     end_time = Column(DateTime, nullable=True)
-    # ms remaining at the moment the round was paused
+    duration_ms = Column(Integer, default=3600000)
     paused_remaining_ms = Column(Integer, nullable=True)
     results_json = Column(JSON, nullable=True)
 

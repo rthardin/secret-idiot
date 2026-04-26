@@ -28,7 +28,22 @@
     </div>
 
     {% if player.is_host %}
-    <div id="host-lobby-controls">
+    <div id="host-lobby-controls" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="duration-row">
+        <label class="duration-label" for="lobby-duration-select">Round duration</label>
+        <select id="lobby-duration-select" class="duration-select">
+          <option value="5">5 min</option>
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+          <option value="20">20 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="60" selected>60 min</option>
+          <option value="90">90 min</option>
+          <option value="120">2 hr</option>
+          <option value="180">3 hr</option>
+        </select>
+      </div>
       <button id="start-game-btn" class="btn btn-primary" disabled>Start Game</button>
     </div>
     {% else %}
@@ -114,10 +129,38 @@
     <div id="leaderboard-card" class="card"></div>
 
     {% if player.is_host %}
-    <button id="next-round-btn" class="btn btn-primary">Start Next Round</button>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="duration-row">
+        <label class="duration-label" for="summary-duration-select">Next round duration</label>
+        <select id="summary-duration-select" class="duration-select">
+          <option value="5">5 min</option>
+          <option value="10">10 min</option>
+          <option value="15">15 min</option>
+          <option value="20">20 min</option>
+          <option value="30">30 min</option>
+          <option value="45">45 min</option>
+          <option value="60" selected>60 min</option>
+          <option value="90">90 min</option>
+          <option value="120">2 hr</option>
+          <option value="180">3 hr</option>
+        </select>
+      </div>
+      <button id="next-round-btn" class="btn btn-primary">Start Next Round</button>
+      <button id="end-game-btn" class="btn btn-ghost btn-danger">End Game</button>
+    </div>
     {% else %}
-    <p class="hint centered-text">Waiting for the host to start the next round…</p>
+    <p class="hint centered-text">Waiting for the host to continue…</p>
     {% endif %}
+  </div>
+
+  <!-- ── GAME OVER ─────────────────────────────────────────────────────── -->
+  <div id="gameover-view" class="view hidden">
+    <header class="view-header">
+      <h2>Game Over</h2>
+    </header>
+    <div id="gameover-leaderboard" class="card"></div>
+    <div id="gameover-history" class="card"></div>
+    <p class="hint centered-text">Thanks for playing! Create a new room to play again.</p>
   </div>
 
 </div><!-- #game-root -->

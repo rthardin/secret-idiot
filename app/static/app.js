@@ -47,9 +47,10 @@
     switch (msg.event) {
       case "ROOM_STATE_SYNC":   onStateSync(msg.payload);    break;
       case "ROLE_ASSIGNED":     onRoleAssigned(msg.payload); break;
-      case "PLAYER_JOINED":     onPlayerJoined(msg.payload); break;
+      case "PLAYER_JOINED":     /* handled via full state sync */ break;
       case "ROUND_RESULTS":     onRoundResults(msg.payload); break;
       case "DEBRIEF_SUBMITTED": onDebriefSubmitted(msg.payload); break;
+      case "GAME_OVER":         onGameOver(msg.payload);     break;
       case "ERROR":             alert(msg.payload.message);  break;
     }
   }
@@ -78,10 +79,14 @@
         showRound(p.round_number, p.time_remaining_ms, true);
         break;
       case "DEBRIEF_PENDING":
-        showDebrief(p.round_number, p.submitted_count, p.total_count);
+        showDebrief(p.round_number, p.submitted_count, p.total_count,
+                    p.your_role, p.your_mission, p.agent_name, p.agent_mission);
         break;
       case "ROUND_SUMMARY":
         if (lastResults) showSummary(lastResults);
+        break;
+      case "GAME_OVER":
+        if (p.game_over) onGameOver(p.game_over);
         break;
     }
   }
@@ -94,11 +99,6 @@
     applyRoleCard();
   }
 
-  function onPlayerJoined(_p) {
-    // Player list is kept in sync via ROOM_STATE_SYNC; this is a no-op placeholder
-    // kept in case we want to add a toast notification later.
-  }
-
   function onRoundResults(p) {
     lastResults = p;
     showSummary(p);
@@ -108,9 +108,46 @@
     updateDebriefProgress(p.submitted_count, p.total_count);
   }
 
+  function onGameOver(p) {
+    showView("gameover-view");
+    clearTimer();
+
+    // Final leaderboard
+    const lb = document.getElementById("gameover-leaderboard");
+    const rows = (p.leaderboard || []).map((pl, i) => `
+      <div class="leaderboard-row">
+        <span class="rank">${i + 1}.</span>
+        <span>${esc(pl.name)}</span>
+        <span class="score">${pl.score}</span>
+      </div>`).join("");
+    lb.innerHTML = `<h2>Final Standings</h2>${rows}`;
+
+    // Mission history
+    const hist = document.getElementById("gameover-history");
+    const outcomeLabels = {
+      PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
+      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Sloppy Agent",
+      FALSE_ACCUSATION: "False Accusation",
+    };
+    const hRows = (p.history || []).map((r) => {
+      const chips = (r.outcomes || []).map((o) =>
+        `<span class="outcome-chip outcome-${o.type}">${outcomeLabels[o.type] || o.type}</span>`
+      ).join(" ");
+      return `<div class="history-row">
+        <div class="history-header">
+          <span class="history-round">Round ${r.round_number}</span>
+          <span class="history-agent">${esc(r.agent_name)}</span>
+        </div>
+        <p class="history-mission">${esc(r.mission)}</p>
+        <div style="margin-top:6px;">${chips}</div>
+      </div>`;
+    }).join("");
+    hist.innerHTML = `<h2>Mission History</h2>${hRows}`;
+  }
+
   // ── Views ─────────────────────────────────────────────────────────────────
   function showView(id) {
-    ["lobby-view", "round-view", "debrief-view", "summary-view"].forEach((v) => {
+    ["lobby-view", "round-view", "debrief-view", "summary-view", "gameover-view"].forEach((v) => {
       document.getElementById(v).classList.add("hidden");
     });
     document.getElementById("pause-overlay").classList.add("hidden");
@@ -132,26 +169,40 @@
   function renderPlayerList(players) {
     const ul = document.getElementById("player-list");
     ul.innerHTML = "";
-    players.forEach((p) => ul.appendChild(makePlayerLi(p.name, p.is_host)));
+    players.forEach((p) => ul.appendChild(makePlayerLi(p)));
+
     const msg = document.getElementById("player-count-msg");
-    if (players.length < 3) {
-      msg.textContent = `${players.length} / 3 minimum players joined`;
-    } else {
-      msg.textContent = `${players.length} players ready`;
+    msg.textContent = players.length < 3
+      ? `${players.length} / 3 minimum players joined`
+      : `${players.length} players ready`;
+
+    if (IS_HOST) {
+      ul.querySelectorAll(".rename-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const newName = prompt(`Rename "${btn.dataset.name}":`, btn.dataset.name);
+          if (newName && newName.trim() && newName.trim() !== btn.dataset.name) {
+            send("RENAME_PLAYER", { player_id: btn.dataset.id, new_name: newName.trim().slice(0, 30) });
+          }
+        });
+      });
     }
   }
 
-  function makePlayerLi(name, isHost) {
+  function makePlayerLi(player) {
     const li = document.createElement("li");
-    li.innerHTML = `<span class="dot"></span><span>${esc(name)}</span>${isHost ? '<span class="host-badge">Host</span>' : ""}`;
+    const hostBadge = player.is_host ? '<span class="host-badge">Host</span>' : "";
+    // Host can rename non-host players while in lobby
+    const renameBtn = (IS_HOST && !player.is_host)
+      ? `<button class="rename-btn" data-id="${esc(player.id)}" data-name="${esc(player.name)}" title="Rename">✏</button>`
+      : "";
+    li.innerHTML = `<span class="dot"></span><span class="player-name">${esc(player.name)}</span>${hostBadge}${renameBtn}`;
     return li;
   }
 
   function updateStartButton() {
     const btn = document.getElementById("start-game-btn");
     if (!btn) return;
-    const count = document.getElementById("player-list").children.length;
-    btn.disabled = count < 3;
+    btn.disabled = allPlayers.length < 3;
   }
 
   // ROUND
@@ -205,10 +256,19 @@
   }
 
   // DEBRIEF
-  function showDebrief(roundNumber, submittedCount, totalCount) {
+  // role/mission params passed directly from the state sync payload so the
+  // form is always built with fresh data even on reconnect.
+  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission) {
+    // Update globals if fresh data arrived
+    if (role) { myRole = role; myMission = mission || null; }
+    if (agentName) { myAgentName = agentName; myAgentMission = agentMission || null; }
+
     showView("debrief-view");
     clearTimer();
     setText("debrief-round-label", `Round ${roundNumber}`);
+
+    // Always unhide form content (may have been hidden from a previous round's submission)
+    document.getElementById("debrief-form-content").classList.remove("hidden");
     buildDebriefForm();
 
     document.getElementById("waiting-for-others").classList.add("hidden");
@@ -224,7 +284,8 @@
     container.innerHTML = "";
 
     if (!myRole) {
-      container.innerHTML = `<p class="hint">Waiting for role assignment…</p>`;
+      container.innerHTML = `<p class="hint">Loading your role…</p>`;
+      setTimeout(buildDebriefForm, 400);
       return;
     }
 
@@ -236,6 +297,7 @@
           <label><input type="radio" name="report" value="SUCCESS"> Yes, I completed it</label>
           <label><input type="radio" name="report" value="FAILURE"> No, I didn't manage it</label>
         </div>`;
+
     } else if (myRole === "WITNESS") {
       const agentReminder = myAgentName
         ? `<p class="mission-reminder">Agent: <strong>${esc(myAgentName)}</strong> — "${esc(myAgentMission || "")}"</p>`
@@ -247,7 +309,9 @@
           <label><input type="radio" name="report" value="WITNESSED"> Yes, I saw it happen</label>
           <label><input type="radio" name="report" value="MISSED"> No, I missed it</label>
         </div>`;
+
     } else {
+      // CROWD
       const others = allPlayers.filter((p) => p.id !== PLAYER_ID);
       const options = others.map((p) => `<option value="${esc(p.id)}">${esc(p.name)}</option>`).join("");
       container.innerHTML = `
@@ -287,7 +351,6 @@
 
     setText("summary-round-label", `Round ${results.round_number}`);
 
-    // Reveal card
     const reveal = document.getElementById("reveal-card");
     reveal.innerHTML = `
       <h2>The Mission</h2>
@@ -295,47 +358,34 @@
       <div class="reveal-row"><span class="label">Witness</span><span class="value">${esc(results.witness_name || "?")}</span></div>
       <div class="reveal-row"><span class="label">Mission</span><span class="value" style="max-width:60%;text-align:right;">${esc(results.mission || "?")}</span></div>`;
 
-    // Outcomes card
-    const outcomesCard = document.getElementById("outcomes-card");
     const outcomeLabels = {
-      PERFECT_CRIME:    "Perfect Crime",
-      HONORABLE_EFFORT: "Honorable Effort",
-      MISSION_FAILED:   "Mission Failed",
-      SLOPPY_AGENT:     "Sloppy Agent",
+      PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
+      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Sloppy Agent",
       FALSE_ACCUSATION: "False Accusation",
     };
-    const outcomeChips = (results.outcomes || []).map((o) => {
+    const chips = (results.outcomes || []).map((o) => {
       const label = outcomeLabels[o.type] || o.type;
       const detail = o.accuser_name ? ` — ${esc(o.accuser_name)}` : "";
       return `<span class="outcome-chip outcome-${o.type}">${label}${detail}</span>`;
     }).join(" ");
+    document.getElementById("outcomes-card").innerHTML =
+      `<h2>Outcome</h2><div style="display:flex;flex-wrap:wrap;gap:8px;">${chips}</div>`;
 
-    outcomesCard.innerHTML = `<h2>Outcome</h2><div style="display:flex;flex-wrap:wrap;gap:8px;">${outcomeChips}</div>`;
-
-    // Score deltas card
     const lbCard = document.getElementById("leaderboard-card");
     const deltaRows = (results.score_deltas || []).map((d) => {
-      const sign  = d.delta > 0 ? "+" : "";
-      const cls   = d.delta > 0 ? "pos" : d.delta < 0 ? "neg" : "zero";
+      const sign = d.delta > 0 ? "+" : "";
+      const cls  = d.delta > 0 ? "pos" : d.delta < 0 ? "neg" : "zero";
       return `<div class="score-row">
         <span>${esc(d.name)}</span>
-        <span>
-          <span class="delta ${cls}">${sign}${d.delta}</span>
-          <span class="total"> (${d.total} total)</span>
-        </span>
+        <span><span class="delta ${cls}">${sign}${d.delta}</span><span class="total"> (${d.total} total)</span></span>
       </div>`;
     }).join("");
-
     const lbRows = (results.leaderboard || []).map((p, i) =>
       `<div class="leaderboard-row">
-        <span class="rank">${i + 1}.</span>
-        <span>${esc(p.name)}</span>
-        <span class="score">${p.score}</span>
+        <span class="rank">${i + 1}.</span><span>${esc(p.name)}</span><span class="score">${p.score}</span>
       </div>`
     ).join("");
-
-    lbCard.innerHTML = `
-      <h2>This Round</h2>${deltaRows}
+    lbCard.innerHTML = `<h2>This Round</h2>${deltaRows}
       <div style="margin-top:12px;"><h2 style="margin-bottom:8px;">Leaderboard</h2>${lbRows}</div>`;
   }
 
@@ -363,14 +413,30 @@
     else if (timeRemainingMs <= 15 * 60 * 1000) el.classList.add("warning");
   }
 
+  // ── Duration helper ────────────────────────────────────────────────────────
+  function selectedDuration() {
+    // Summary select takes priority when visible, otherwise lobby select
+    const summaryEl = document.getElementById("summary-duration-select");
+    if (summaryEl && !document.getElementById("summary-view").classList.contains("hidden")) {
+      return parseInt(summaryEl.value, 10);
+    }
+    const lobbyEl = document.getElementById("lobby-duration-select");
+    return lobbyEl ? parseInt(lobbyEl.value, 10) : 60;
+  }
+
   // ── Host controls ──────────────────────────────────────────────────────────
-  on("start-game-btn",    "click", () => send("START_GAME"));
+  on("start-game-btn",    "click", () => send("START_GAME",  { duration_minutes: selectedDuration() }));
   on("pause-btn",         "click", () => send("PAUSE_GAME"));
   on("resume-btn",        "click", () => send("RESUME_GAME"));
-  on("next-round-btn",    "click", () => send("NEXT_ROUND"));
+  on("next-round-btn",    "click", () => send("NEXT_ROUND",  { duration_minutes: selectedDuration() }));
   on("force-results-btn", "click", () => send("FORCE_RESULTS"));
   on("force-debrief-btn", "click", () => {
     if (confirm("End the round early and open debrief?")) send("FORCE_DEBRIEF");
+  });
+  on("end-game-btn", "click", () => {
+    if (confirm("End the game and show the final leaderboard? This cannot be undone.")) {
+      send("END_GAME");
+    }
   });
 
   // Debrief submit
@@ -442,10 +508,8 @@
 
   function esc(str) {
     return String(str ?? "")
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
   // ── Init ──────────────────────────────────────────────────────────────────

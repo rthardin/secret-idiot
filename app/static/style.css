@@ -364,3 +364,53 @@ select {
 .leaderboard-row:last-child { border-bottom: none; }
 .leaderboard-row .rank { color: var(--text-dim); font-size: 0.85rem; width: 24px; }
 .leaderboard-row .score { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+
+/* ── Rename button ─────────────────────────────────────────────── */
+.rename-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: color 0.15s;
+}
+.rename-btn:hover { color: var(--accent); }
+
+/* ── Duration selector ─────────────────────────────────────────── */
+.duration-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border-radius: 10px;
+}
+.duration-label { font-size: 0.9rem; color: var(--text-dim); }
+.duration-select {
+  background: var(--bg);
+  border: 1px solid var(--surface2);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+/* ── Mission history (game over) ───────────────────────────────── */
+.history-row {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+.history-row:last-child { border-bottom: none; }
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+.history-round { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
+.history-agent { font-size: 0.85rem; font-weight: 600; color: var(--agent); }
+.history-mission { font-size: 0.9rem; color: var(--text); }
