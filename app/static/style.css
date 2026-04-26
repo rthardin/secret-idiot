@@ -420,6 +420,22 @@ select {
 .leaderboard-row .rank { color: var(--text-dim); font-size: 0.85rem; width: 24px; }
 .leaderboard-row .score { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
 
+/* ── Copy URL button ───────────────────────────────────────────── */
+.btn-copy {
+  background: var(--surface2);
+  border: none;
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+.btn-copy:hover { background: var(--accent); }
+
 /* ── Rename button ─────────────────────────────────────────────── */
 .rename-btn {
   margin-left: auto;

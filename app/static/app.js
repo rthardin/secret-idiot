@@ -199,6 +199,16 @@
       }
     }
 
+    const copyBtn = document.getElementById("copy-url-btn");
+    if (copyBtn) {
+      copyBtn.onclick = () => {
+        navigator.clipboard.writeText(url).then(() => {
+          copyBtn.textContent = "Copied!";
+          setTimeout(() => { copyBtn.textContent = "Copy"; }, 2000);
+        });
+      };
+    }
+
     renderPlayerList(players);
     updateStartButton();
   }

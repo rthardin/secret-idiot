@@ -24,7 +24,10 @@
     <div class="card">
       <p class="hint">Share this code with friends:</p>
       <div class="join-code-big">{{ join_code }}</div>
-      <p class="hint small">or send them: <span id="join-url" class="monospace"></span></p>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <p class="hint small" style="flex:1;">or send them: <span id="join-url" class="monospace"></span></p>
+        <button id="copy-url-btn" class="btn-copy" title="Copy link">Copy</button>
+      </div>
     </div>
 
     {% if player.is_host %}
