@@ -5,6 +5,8 @@ import string
 import uuid
 from datetime import datetime, timedelta
 
+import httpx
+
 from fastapi import Depends, FastAPI, Form, HTTPException, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import FileResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -66,6 +68,8 @@ def _migrate_db():
         room_cols = [c["name"] for c in inspector.get_columns("rooms")]
         if "game_over_json" not in room_cols:
             conn.execute(text("ALTER TABLE rooms ADD COLUMN game_over_json JSON"))
+        if "discord_webhook_url" not in room_cols:
+            conn.execute(text("ALTER TABLE rooms ADD COLUMN discord_webhook_url VARCHAR"))
         report_cols = [c["name"] for c in inspector.get_columns("debrief_reports")]
         if "vetoed" not in report_cols:
             conn.execute(text("ALTER TABLE debrief_reports ADD COLUMN vetoed BOOLEAN DEFAULT 0"))
@@ -220,6 +224,31 @@ async def websocket_endpoint(
 # Game flow helpers
 # ---------------------------------------------------------------------------
 
+_OUTCOME_LABELS = {
+    "PERFECT_CRIME": "Perfect Crime",
+    "HONORABLE_EFFORT": "Honorable Effort",
+    "MISSION_FAILED": "Mission Failed",
+    "SLOPPY_AGENT": "Sloppy Agent",
+    "FALSE_ACCUSATION": "False Accusation",
+}
+
+
+async def _discord(webhook_url: str, payload: dict) -> None:
+    if not webhook_url:
+        return
+    try:
+        async with httpx.AsyncClient(timeout=8) as client:
+            await client.post(webhook_url, json=payload)
+    except Exception as exc:
+        print(f"[Discord webhook] failed: {exc}")
+
+
+def _fire_discord(webhook_url: str, payload: dict) -> None:
+    """Schedule a Discord notification without blocking the caller."""
+    if webhook_url:
+        asyncio.create_task(_discord(webhook_url, payload))
+
+
 async def _start_round(room: Room, db: Session, duration_ms: int = None):
     if duration_ms is None:
         duration_ms = ROUND_DURATION_MS
@@ -250,6 +279,15 @@ async def _start_round(room: Room, db: Session, duration_ms: int = None):
         await manager.send(room.id, asgn.player_id, {"event": "ROLE_ASSIGNED", "payload": payload})
 
     await _broadcast_state(room.id, db)
+
+    duration_label = _format_duration(duration_ms)
+    _fire_discord(room.discord_webhook_url, {
+        "embeds": [{
+            "title": f"🎭 Round {rnd.round_number} has started!",
+            "description": f"Duration: **{duration_label}**. Check your screens for your secret role — and keep it private!",
+            "color": 0x7c6af7,
+        }]
+    })
 
     # Cancel any existing timer and start a new one
     _cancel_timer(room.id)
@@ -324,6 +362,37 @@ async def _finish_debrief(room_id: str, db: Session):
     room.current_state = RoomState.ROUND_SUMMARY
     db.commit()
 
+    outcome_text = " · ".join(
+        _OUTCOME_LABELS.get(o["type"], o["type"])
+        for o in outcomes
+        if not o.get("vetoed")
+    ) or "No outcome"
+    score_lines = "\n".join(
+        f"{d['name']}: {'+'if d['delta']>0 else ''}{d['delta']} ({d['total']} total)"
+        for d in results["score_deltas"]
+    )
+    burns_lines = "\n".join(
+        f"{b['accuser_name']} → {b['target_name']}" +
+        (f": \"{b['mission_guess']}\"" if b.get("mission_guess") else "")
+        for b in burns
+    )
+    fields = [
+        {"name": "Agent", "value": results.get("agent_name") or "?", "inline": True},
+        {"name": "Witness", "value": results.get("witness_name") or "?", "inline": True},
+        {"name": "Mission", "value": results.get("mission") or "?", "inline": False},
+        {"name": "Outcome", "value": outcome_text, "inline": False},
+        {"name": "Scores", "value": score_lines or "—", "inline": False},
+    ]
+    if burns_lines:
+        fields.append({"name": "Burns", "value": burns_lines, "inline": False})
+    _fire_discord(room.discord_webhook_url, {
+        "embeds": [{
+            "title": f"📋 Round {rnd.round_number} Results",
+            "color": 0xe94560,
+            "fields": fields,
+        }]
+    })
+
     await manager.broadcast(room_id, {"event": "ROUND_RESULTS", "payload": results})
 
 
@@ -342,6 +411,13 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
             )
             return
         duration_minutes = int(payload.get("duration_minutes", ROUND_DURATION_MS // 60000))
+        webhook = str(payload.get("discord_webhook_url") or "").strip()
+        if webhook.startswith("https://discord.com/api/webhooks/") or \
+           webhook.startswith("https://discordapp.com/api/webhooks/"):
+            room.discord_webhook_url = webhook
+        else:
+            room.discord_webhook_url = None
+        db.commit()
         await _start_round(room, db, duration_ms=duration_minutes * 60 * 1000)
 
     elif action == "PAUSE_GAME":
@@ -644,6 +720,19 @@ async def _end_game(room: Room, db: Session):
     room.game_over_json = game_over
     room.current_state = RoomState.GAME_OVER
     db.commit()
+
+    lb_text = "\n".join(
+        f"{i+1}. {p['name']} — {p['score']} pts"
+        for i, p in enumerate(game_over["leaderboard"])
+    )
+    _fire_discord(room.discord_webhook_url, {
+        "embeds": [{
+            "title": "🏁 Game Over — Final Standings",
+            "description": lb_text or "—",
+            "color": 0x4fc3f7,
+        }]
+    })
+
     await manager.broadcast(room.id, {"event": "GAME_OVER", "payload": game_over})
 
 
@@ -675,6 +764,17 @@ def _cancel_timer(room_id: str):
 # ---------------------------------------------------------------------------
 # Utilities
 # ---------------------------------------------------------------------------
+
+def _format_duration(ms: int) -> str:
+    minutes = ms // 60000
+    if minutes >= 60 and minutes % 60 == 0:
+        hours = minutes // 60
+        return f"{hours} hr"
+    if minutes >= 60:
+        h, m = divmod(minutes, 60)
+        return f"{h} hr {m} min"
+    return f"{minutes} min"
+
 
 def _generate_join_code(db: Session, length: int = 6) -> str:
     chars = string.ascii_uppercase + string.digits

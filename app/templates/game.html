@@ -29,6 +29,11 @@
 
     {% if player.is_host %}
     <div id="host-lobby-controls" style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <label class="duration-label" for="discord-webhook-input">Discord webhook <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+        <input type="text" id="discord-webhook-input" placeholder="https://discord.com/api/webhooks/…" autocomplete="off" autocorrect="off" spellcheck="false">
+        <p class="hint small">Paste a Discord webhook URL to receive round notifications in your channel.</p>
+      </div>
       <div class="duration-row">
         <label class="duration-label" for="lobby-duration-select">Round duration</label>
         <select id="lobby-duration-select" class="duration-select">

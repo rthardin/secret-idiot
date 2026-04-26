@@ -176,6 +176,8 @@
     document.getElementById(id).classList.remove("hidden");
   }
 
+  const WEBHOOK_STORAGE_KEY = "undercurrent_discord_webhook";
+
   // LOBBY
   function showLobby(players) {
     showView("lobby-view");
@@ -183,6 +185,19 @@
 
     const url = `${location.origin}/join/${ROOM_CODE}`;
     document.getElementById("join-url").textContent = url;
+
+    // Pre-populate webhook input from localStorage (host only)
+    if (IS_HOST) {
+      const webhookInput = document.getElementById("discord-webhook-input");
+      if (webhookInput) {
+        webhookInput.value = localStorage.getItem(WEBHOOK_STORAGE_KEY) || "";
+        webhookInput.addEventListener("change", () => {
+          const val = webhookInput.value.trim();
+          if (val) localStorage.setItem(WEBHOOK_STORAGE_KEY, val);
+          else localStorage.removeItem(WEBHOOK_STORAGE_KEY);
+        });
+      }
+    }
 
     renderPlayerList(players);
     updateStartButton();
@@ -491,7 +506,15 @@
   }
 
   // ── Host controls ──────────────────────────────────────────────────────────
-  on("start-game-btn",    "click", () => send("START_GAME",  { duration_minutes: selectedDuration() }));
+  on("start-game-btn", "click", () => {
+    const webhookInput = document.getElementById("discord-webhook-input");
+    const webhookUrl = webhookInput ? webhookInput.value.trim() : "";
+    if (webhookUrl) localStorage.setItem(WEBHOOK_STORAGE_KEY, webhookUrl);
+    send("START_GAME", {
+      duration_minutes: selectedDuration(),
+      discord_webhook_url: webhookUrl || null,
+    });
+  });
   on("pause-btn",         "click", () => send("PAUSE_GAME"));
   on("resume-btn",        "click", () => send("RESUME_GAME"));
   on("next-round-btn",    "click", () => send("NEXT_ROUND",  { duration_minutes: selectedDuration() }));

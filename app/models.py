@@ -49,6 +49,7 @@ class Room(Base):
     current_state = Column(Enum(RoomState), default=RoomState.LOBBY, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
     game_over_json = Column(JSON, nullable=True)
+    discord_webhook_url = Column(String, nullable=True)
 
     players = relationship("Player", back_populates="room", foreign_keys="Player.room_id")
     rounds = relationship("Round", back_populates="room")
