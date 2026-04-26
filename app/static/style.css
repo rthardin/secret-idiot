@@ -268,6 +268,61 @@ input[type="text"]::placeholder { color: var(--text-dim); }
 .overlay-card h2 { font-size: 1.4rem; }
 .overlay-card p  { color: var(--text-dim); }
 
+/* ── How to play overlay ────────────────────────────────────────── */
+.howtoplay-card {
+  text-align: left;
+  max-width: 420px;
+  max-height: 88dvh;
+  overflow-y: auto;
+  gap: 20px;
+}
+.howtoplay-card h2 { text-align: center; font-size: 1.3rem; }
+
+.htp-intro { color: var(--text); font-size: 0.95rem; line-height: 1.55; }
+
+.htp-roles { display: flex; flex-direction: column; gap: 12px; }
+.htp-role {
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.htp-role-name { font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; }
+.htp-role p { font-size: 0.875rem; color: var(--text-dim); margin: 0; }
+.agent-color   { color: var(--agent); }
+.witness-color { color: var(--witness); }
+.crowd-color   { color: var(--crowd); }
+
+.htp-section { display: flex; flex-direction: column; gap: 6px; }
+.htp-label {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--text-dim); margin-bottom: 2px;
+}
+.htp-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 0.875rem;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+.htp-score-row:last-child { border-bottom: none; }
+.htp-pts { font-weight: 600; color: var(--accent); white-space: nowrap; font-size: 0.8rem; }
+.htp-note { color: var(--text-dim); font-size: 0.8rem; }
+
+.htp-privacy {
+  text-align: center;
+  font-weight: 600;
+  color: var(--warning);
+  font-size: 0.9rem;
+  background: rgba(255,152,0,0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+
 /* ── Debrief form ──────────────────────────────────────────────── */
 .radio-group { display: flex; flex-direction: column; gap: 10px; }
 .radio-group label {

@@ -10,6 +10,7 @@
   const VAPID_KEY     = root.dataset.vapidKey || "";
 
   let ws = null;
+  let tutorialSeen = false;
   let myRole = null;
   let myMission = null;
   let myAgentName = null;
@@ -171,6 +172,7 @@
       document.getElementById(v).classList.add("hidden");
     });
     document.getElementById("pause-overlay").classList.add("hidden");
+    document.getElementById("howtoplay-overlay").classList.add("hidden");
     document.getElementById(id).classList.remove("hidden");
   }
 
@@ -241,6 +243,10 @@
     }
 
     applyRoleCard();
+
+    if (roundNumber === 1 && !tutorialSeen) {
+      document.getElementById("howtoplay-overlay").classList.remove("hidden");
+    }
   }
 
   function applyRoleCard() {
@@ -492,6 +498,10 @@
   on("force-results-btn", "click", () => send("FORCE_RESULTS"));
   on("force-debrief-btn", "click", () => {
     if (confirm("End the round early and open debrief?")) send("FORCE_DEBRIEF");
+  });
+  on("howtoplay-close-btn", "click", () => {
+    tutorialSeen = true;
+    document.getElementById("howtoplay-overlay").classList.add("hidden");
   });
   on("abandon-round-btn", "click", () => {
     if (confirm("Abandon this round and retry with newly assigned roles? No points will be awarded.")) {

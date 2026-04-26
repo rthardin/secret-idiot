@@ -70,7 +70,7 @@
         <p class="mission-label" style="margin-top:14px;">Their Mission</p>
         <p id="witness-agent-mission" class="mission-text"></p>
       </div>
-      <p id="witness-hint" class="role-hint hidden">Watch them — verify they complete it without giving them away.</p>
+      <p id="witness-hint" class="role-hint hidden">Watch them quietly and verify they complete their mission. The agent doesn't know who you are — it's their job to execute visibly enough to be seen, not yours to track them down.</p>
       <p id="crowd-hint" class="role-hint hidden">Stay alert. If you spot suspicious behaviour, you can burn someone during the debrief.</p>
     </div>
 
@@ -81,6 +81,43 @@
       <button id="abandon-round-btn" class="btn btn-ghost btn-danger">Abandon &amp; Retry Round</button>
     </div>
     {% endif %}
+  </div>
+
+  <!-- ── HOW TO PLAY OVERLAY ──────────────────────────────────────────────── -->
+  <div id="howtoplay-overlay" class="overlay hidden">
+    <div class="overlay-card howtoplay-card">
+      <h2>How to Play</h2>
+
+      <p class="htp-intro">One player is secretly the <strong>Agent</strong>. Their mission: complete a covert task in public without the Crowd catching on — while making sure the Witness sees it happen.</p>
+
+      <div class="htp-roles">
+        <div class="htp-role">
+          <span class="htp-role-name agent-color">Agent</span>
+          <p>You have a secret mission. Complete it visibly enough that your Witness can confirm it — but discreetly enough that the Crowd doesn't notice.</p>
+        </div>
+        <div class="htp-role">
+          <span class="htp-role-name witness-color">Witness</span>
+          <p>You know who the Agent is and what their mission is. Observe quietly. Don't tip off the Crowd, and don't hover — the Agent will come to you.</p>
+        </div>
+        <div class="htp-role">
+          <span class="htp-role-name crowd-color">Crowd</span>
+          <p>You have no idea who the Agent is or what they're doing. Watch everyone for suspicious behaviour. You can accuse (burn) someone in the debrief.</p>
+        </div>
+      </div>
+
+      <div class="htp-section">
+        <p class="htp-label">Scoring</p>
+        <div class="htp-score-row"><span>Perfect Crime</span><span class="htp-pts">Agent &amp; Witness +2</span></div>
+        <div class="htp-score-row"><span>Honorable Effort <span class="htp-note">(Witness missed it)</span></span><span class="htp-pts">Agent +1</span></div>
+        <div class="htp-score-row"><span>Sloppy Agent <span class="htp-note">(correct burn)</span></span><span class="htp-pts">Burner +1 · Agent −1</span></div>
+        <div class="htp-score-row"><span>False Accusation</span><span class="htp-pts">Burner −1</span></div>
+        <div class="htp-score-row"><span>Mission Failed</span><span class="htp-pts">No points</span></div>
+      </div>
+
+      <p class="htp-privacy">Keep your screen private — don't let others see your role!</p>
+
+      <button id="howtoplay-close-btn" class="btn btn-primary">Got it — show my role</button>
+    </div>
   </div>
 
   <!-- ── PAUSE OVERLAY ─────────────────────────────────────────────────── -->
