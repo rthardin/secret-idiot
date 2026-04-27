@@ -756,7 +756,7 @@ async def _end_game(room: Room, db: Session):
     db.commit()
 
     lb_text = "\n".join(
-        f"{i+1}. {p['name']} — {p['score']} pts"
+        f"{'🏆' if i == 0 else f'{i+1}.'} {p['name']} — {p['score']} pts"
         for i, p in enumerate(game_over["leaderboard"])
     )
     _fire_discord(room.discord_webhook_url, {
