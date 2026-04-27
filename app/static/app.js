@@ -128,7 +128,7 @@
     const hist = document.getElementById("gameover-history");
     const outcomeLabels = {
       PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
-      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Burner",
+      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Sick Burn",
       FALSE_ACCUSATION: "False Accusation",
     };
     const hRows = (p.history || []).map((r) => {
@@ -412,7 +412,7 @@
 
     const outcomeLabels = {
       PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
-      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Burner",
+      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Sick Burn",
       FALSE_ACCUSATION: "False Accusation",
     };
     const chips = (results.outcomes || []).map((o) => {
