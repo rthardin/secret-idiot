@@ -627,4 +627,15 @@
   // ── Init ──────────────────────────────────────────────────────────────────
   connect();
   registerSW();
+
+  // Re-sync when a backgrounded tab regains focus — browsers throttle timers
+  // while hidden, so the clock drifts and missed WS messages can leave stale UI.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      if (ws && ws.readyState === WebSocket.OPEN) {
+        send("REQUEST_SYNC", {});
+      }
+      // If WS is closed the reconnect handler will fire and sync on connect.
+    }
+  });
 })();
