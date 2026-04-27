@@ -110,7 +110,7 @@ def calculate_scores(db: Session, round_id: str) -> tuple[dict, list, list]:
             deltas[burn.player_id] = deltas.get(burn.player_id, 0) + 1
             deltas[agent_id] = deltas.get(agent_id, 0) - 1
             correct_burns.append(burn)
-            outcomes.append({"type": "SLOPPY_AGENT", **outcome_base})
+            outcomes.append({"type": "SICK_BURN", **outcome_base})
         else:
             deltas[burn.player_id] = deltas.get(burn.player_id, 0) - 1
             outcome_base["target_name"] = target.name if target else "?"
