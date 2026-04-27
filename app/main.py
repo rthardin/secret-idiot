@@ -343,15 +343,19 @@ async def _finish_debrief(room_id: str, db: Session):
         "mission": agent_asgn.mission.description if (agent_asgn and agent_asgn.mission) else None,
         "outcomes": outcomes,
         "burns": burns,
-        "score_deltas": [
-            {
-                "player_id": p.id,
-                "name": p.name,
-                "delta": deltas.get(p.id, 0),
-                "total": p.total_score,
-            }
-            for p in players
-        ],
+        "score_deltas": sorted(
+            [
+                {
+                    "player_id": p.id,
+                    "name": p.name,
+                    "delta": deltas.get(p.id, 0),
+                    "total": p.total_score,
+                }
+                for p in players
+            ],
+            key=lambda d: d["delta"],
+            reverse=True,
+        ),
         "leaderboard": [
             {"name": p.name, "score": p.total_score} for p in players
         ],
@@ -573,10 +577,14 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
             **rnd.results_json,
             "outcomes": outcomes,
             "burns": burns,
-            "score_deltas": [
-                {"player_id": p.id, "name": p.name, "delta": deltas.get(p.id, 0), "total": p.total_score}
-                for p in players_sorted
-            ],
+            "score_deltas": sorted(
+                [
+                    {"player_id": p.id, "name": p.name, "delta": deltas.get(p.id, 0), "total": p.total_score}
+                    for p in players_sorted
+                ],
+                key=lambda d: d["delta"],
+                reverse=True,
+            ),
             "leaderboard": [{"name": p.name, "score": p.total_score} for p in players_sorted],
         }
         rnd.results_json = results
@@ -777,7 +785,8 @@ def _format_duration(ms: int) -> str:
 
 
 def _generate_join_code(db: Session, length: int = 6) -> str:
-    chars = string.ascii_uppercase + string.digits
+    # Exclude visually ambiguous characters: 0/O, 1/I, L
+    chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
     for _ in range(20):
         code = "".join(random.choices(chars, k=length))
         if not db.query(Room).filter_by(join_code=code).first():

@@ -101,10 +101,10 @@ def calculate_scores(db: Session, round_id: str) -> tuple[dict, list, list]:
         }
 
         if vetoed:
-            outcome_type = "SLOPPY_AGENT" if is_correct else "FALSE_ACCUSATION"
-            if not is_correct:
-                outcome_base["target_name"] = target.name if target else "?"
-            outcomes.append({"type": outcome_type, **outcome_base})
+            # Vetoed burns always count as false accusations: burner loses 1 point.
+            deltas[burn.player_id] = deltas.get(burn.player_id, 0) - 1
+            outcome_base["target_name"] = target.name if target else "?"
+            outcomes.append({"type": "FALSE_ACCUSATION", **outcome_base})
             continue
 
         if is_correct:
