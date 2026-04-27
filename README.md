@@ -45,10 +45,6 @@ Environment variables:
 |---|---|
 | `DATABASE_URL` | SQLite path or Postgres URL (defaults to `sqlite:///./undercurrent.db`) |
 | `ROUND_DURATION_MINUTES` | Default round duration if not set by host (defaults to `60`) |
-| `VAPID_PRIVATE_KEY` | For web push notifications (optional) |
-| `VAPID_PUBLIC_KEY` | For web push notifications (optional) |
-| `VAPID_CLAIMS_EMAIL` | Contact email for VAPID (optional) |
-
 ## Discord notifications
 
 When creating a room, the host can paste a Discord webhook URL. The webhook will receive an embed notification when each round starts, when results are posted, and when the game ends. The URL is cached in the browser for convenience.

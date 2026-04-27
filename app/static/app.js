@@ -7,7 +7,6 @@
   const PLAYER_ID     = root.dataset.playerId;
   const SESSION_TOKEN = root.dataset.sessionToken;
   const IS_HOST       = root.dataset.isHost === "true";
-  const VAPID_KEY     = root.dataset.vapidKey || "";
 
   let ws = null;
   let tutorialSeen = false;
@@ -575,39 +574,6 @@
     document.getElementById("waiting-for-others").classList.remove("hidden");
   });
 
-  // ── Service worker & push ─────────────────────────────────────────────────
-  async function registerSW() {
-    if (!("serviceWorker" in navigator)) return;
-    try {
-      const reg = await navigator.serviceWorker.register("/sw.js");
-      if (VAPID_KEY) await subscribePush(reg);
-    } catch (e) {
-      console.warn("SW registration failed:", e);
-    }
-  }
-
-  async function subscribePush(reg) {
-    if (!("PushManager" in window)) return;
-    const perm = await Notification.requestPermission();
-    if (perm !== "granted") return;
-    try {
-      const sub = await reg.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_KEY),
-      });
-      send("SAVE_PUSH_SUB", { subscription: JSON.parse(JSON.stringify(sub)) });
-    } catch (e) {
-      console.warn("Push subscription failed:", e);
-    }
-  }
-
-  function urlBase64ToUint8Array(base64String) {
-    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
-    const raw = atob(base64);
-    return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
-  }
-
   // ── Utilities ─────────────────────────────────────────────────────────────
   function setText(id, text) {
     const el = document.getElementById(id);
@@ -627,7 +593,6 @@
 
   // ── Init ──────────────────────────────────────────────────────────────────
   connect();
-  registerSW();
 
   // Re-sync when a backgrounded tab regains focus — browsers throttle timers
   // while hidden, so the clock drifts and missed WS messages can leave stale UI.

@@ -5,8 +5,7 @@
      data-room-code="{{ join_code }}"
      data-player-id="{{ player.id }}"
      data-session-token="{{ player.session_token }}"
-     data-is-host="{{ 'true' if player.is_host else 'false' }}"
-     data-vapid-key="{{ vapid_public_key or '' }}">
+     data-is-host="{{ 'true' if player.is_host else 'false' }}">
 
   <!-- ── LOBBY ─────────────────────────────────────────────────────────── -->
   <div id="lobby-view" class="view hidden">

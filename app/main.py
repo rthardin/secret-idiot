@@ -27,7 +27,6 @@ from .models import (
     RoomState,
     Round,
 )
-from .push import get_vapid_public_key, send_push_to_players
 from .ws_manager import ConnectionManager
 
 import os
@@ -74,15 +73,6 @@ def _migrate_db():
         if "vetoed" not in report_cols:
             conn.execute(text("ALTER TABLE debrief_reports ADD COLUMN vetoed BOOLEAN DEFAULT 0"))
         conn.commit()
-
-
-# ---------------------------------------------------------------------------
-# Service worker (must be served from root scope for full PWA coverage)
-# ---------------------------------------------------------------------------
-
-@app.get("/sw.js")
-async def service_worker():
-    return FileResponse("app/static/sw.js", media_type="application/javascript")
 
 
 @app.get("/manifest.json")
@@ -181,7 +171,6 @@ async def game_page(
             "room": room,
             "player": player,
             "join_code": join_code.upper(),
-            "vapid_public_key": get_vapid_public_key(),
         },
     )
 
@@ -310,9 +299,6 @@ async def _transition_to_debrief(room_id: str, db: Session):
     db.commit()
 
     await _broadcast_state(room_id, db)
-
-    players = db.query(Player).filter_by(room_id=room_id).all()
-    await send_push_to_players(players, "Round over!", "Open the app to submit your debrief.")
 
 
 async def _finish_debrief(room_id: str, db: Session):
@@ -637,10 +623,6 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         if not player.is_host or room.current_state != RoomState.ROUND_SUMMARY:
             return
         await _end_game(room, db)
-
-    elif action == "SAVE_PUSH_SUB":
-        player.push_sub = payload.get("subscription")
-        db.commit()
 
     elif action == "REQUEST_SYNC":
         await _send_state_sync(room_id, player_id, db)

@@ -63,7 +63,6 @@ class Player(Base):
     name = Column(String(50), nullable=False)
     session_token = Column(String, nullable=False, default=gen_uuid)
     total_score = Column(Integer, default=0)
-    push_sub = Column(JSON, nullable=True)
     is_host = Column(Boolean, default=False)
 
     room = relationship("Room", back_populates="players", foreign_keys=[room_id])
