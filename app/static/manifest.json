@@ -1,7 +1,7 @@
 {
-  "name": "The Undercurrent",
-  "short_name": "Undercurrent",
-  "description": "A background social game for groups",
+  "name": "Secret Idiot",
+  "short_name": "Secret Idiot",
+  "description": "A social game",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0d0d1a",

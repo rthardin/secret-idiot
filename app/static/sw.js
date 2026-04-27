@@ -1,9 +1,9 @@
 self.addEventListener("push", (event) => {
   if (!event.data) return;
   let data = {};
-  try { data = event.data.json(); } catch { data = { title: "The Undercurrent", body: event.data.text() }; }
+  try { data = event.data.json(); } catch { data = { title: "Secret Idiot", body: event.data.text() }; }
   event.waitUntil(
-    self.registration.showNotification(data.title || "The Undercurrent", {
+    self.registration.showNotification(data.title || "Secret Idiot", {
       body: data.body || "",
       icon: "/static/icon.png",
       badge: "/static/icon.png",
