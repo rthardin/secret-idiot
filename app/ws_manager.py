@@ -4,8 +4,7 @@ from fastapi import WebSocket
 
 class ConnectionManager:
     def __init__(self):
-        # {room_id: {player_id: WebSocket}}
-        self.connections = {}  # {room_id: {player_id: WebSocket}}
+        self.connections: dict[str, dict[str, WebSocket]] = {}  # {room_id: {player_id: WebSocket}}
 
     async def connect(self, websocket: WebSocket, room_id: str, player_id: str):
         await websocket.accept()
@@ -23,7 +22,7 @@ class ConnectionManager:
             try:
                 await ws.send_text(json.dumps(message))
             except Exception:
-                pass
+                self.disconnect(room_id, player_id)
 
     async def broadcast(self, room_id: str, message: dict, exclude=None):
         for pid, ws in list(self.connections.get(room_id, {}).items()):
@@ -32,7 +31,7 @@ class ConnectionManager:
             try:
                 await ws.send_text(json.dumps(message))
             except Exception:
-                pass
+                self.disconnect(room_id, pid)
 
     def connected_player_ids(self, room_id: str):
         return set(self.connections.get(room_id, {}).keys())
