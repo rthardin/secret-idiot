@@ -99,6 +99,11 @@ async def index(request: Request):
     return templates.TemplateResponse(request, "index.html")
 
 
+@app.get("/about", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse(request, "about.html")
+
+
 @app.post("/create")
 async def create_room(host_name: str = Form(...), db: Session = Depends(get_db)):
     join_code = _generate_join_code(db)
