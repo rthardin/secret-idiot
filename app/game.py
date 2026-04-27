@@ -2,7 +2,7 @@ import json
 import random
 from pathlib import Path
 from sqlalchemy.orm import Session
-from .models import Assignment, DebriefReport, Mission, Player, ReportType, Role
+from .models import Assignment, DebriefReport, Mission, Player, ReportType, Role, Round
 
 
 MISSIONS_FILE = Path(__file__).parent.parent / "missions.json"
@@ -28,8 +28,16 @@ def assign_roles(db: Session, round_id: str, room_id: str) -> list[Assignment]:
     shuffled = players[:]
     random.shuffle(shuffled)
 
-    missions = db.query(Mission).all()
-    mission = random.choice(missions)
+    used_mission_ids = {
+        row.mission_id
+        for row in db.query(Assignment.mission_id)
+            .join(Round, Assignment.round_id == Round.id)
+            .filter(Round.room_id == room_id, Assignment.role == Role.AGENT, Assignment.mission_id.isnot(None))
+            .all()
+    }
+    all_missions = db.query(Mission).all()
+    available = [m for m in all_missions if m.id not in used_mission_ids] or all_missions
+    mission = random.choice(available)
 
     assignments = [
         Assignment(round_id=round_id, player_id=shuffled[0].id, role=Role.AGENT, mission_id=mission.id),
