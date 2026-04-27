@@ -9,9 +9,8 @@ MISSIONS_FILE = Path(__file__).parent.parent / "missions.json"
 
 
 def load_missions(db: Session):
-    if db.query(Mission).count() > 0:
-        return
     data = json.loads(MISSIONS_FILE.read_text())
+    db.query(Mission).delete()
     for item in data:
         db.add(Mission(
             description=item["description"],
