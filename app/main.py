@@ -333,9 +333,14 @@ async def _finish_debrief(room_id: str, db: Session):
 
     agent_asgn = db.query(Assignment).filter_by(round_id=rnd.id, role=Role.AGENT).first()
     witness_asgn = db.query(Assignment).filter_by(round_id=rnd.id, role=Role.WITNESS).first()
+    role_map = {
+        a.player_id: a.role.value
+        for a in db.query(Assignment).filter_by(round_id=rnd.id).all()
+    }
 
     players = db.query(Player).filter_by(room_id=room_id).order_by(Player.total_score.desc()).all()
 
+    _role_priority = {"AGENT": 0, "WITNESS": 1, "CROWD": 2}
     results = {
         "round_number": rnd.round_number,
         "agent_name": agent_asgn.player.name if agent_asgn else None,
@@ -350,11 +355,11 @@ async def _finish_debrief(room_id: str, db: Session):
                     "name": p.name,
                     "delta": deltas.get(p.id, 0),
                     "total": p.total_score,
+                    "role": role_map.get(p.id, "CROWD"),
                 }
                 for p in players
             ],
-            key=lambda d: d["delta"],
-            reverse=True,
+            key=lambda d: (-d["delta"], _role_priority.get(d["role"], 2)),
         ),
         "leaderboard": [
             {"name": p.name, "score": p.total_score} for p in players
@@ -554,9 +559,18 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         )
         if not rnd or not rnd.results_json:
             return
+        agent_asgn = db.query(Assignment).filter_by(round_id=rnd.id, role=Role.AGENT).first()
         report = db.query(DebriefReport).filter_by(id=report_id, round_id=rnd.id).first()
         if not report or report.report_type != ReportType.BURN:
             return
+        # Only correct burns (target was the agent) may be vetoed
+        if not agent_asgn or report.target_id != agent_asgn.player_id:
+            return
+
+        role_map = {
+            a.player_id: a.role.value
+            for a in db.query(Assignment).filter_by(round_id=rnd.id).all()
+        }
 
         # Un-apply old score deltas before recalculating
         old_deltas = {d["player_id"]: d["delta"] for d in rnd.results_json.get("score_deltas", [])}
@@ -572,6 +586,7 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         for p in all_players:
             p.total_score += deltas.get(p.id, 0)
 
+        _role_priority = {"AGENT": 0, "WITNESS": 1, "CROWD": 2}
         players_sorted = sorted(all_players, key=lambda p: p.total_score, reverse=True)
         results = {
             **rnd.results_json,
@@ -579,11 +594,14 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
             "burns": burns,
             "score_deltas": sorted(
                 [
-                    {"player_id": p.id, "name": p.name, "delta": deltas.get(p.id, 0), "total": p.total_score}
+                    {
+                        "player_id": p.id, "name": p.name,
+                        "delta": deltas.get(p.id, 0), "total": p.total_score,
+                        "role": role_map.get(p.id, "CROWD"),
+                    }
                     for p in players_sorted
                 ],
-                key=lambda d: d["delta"],
-                reverse=True,
+                key=lambda d: (-d["delta"], _role_priority.get(d["role"], 2)),
             ),
             "leaderboard": [{"name": p.name, "score": p.total_score} for p in players_sorted],
         }

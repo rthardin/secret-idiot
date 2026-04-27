@@ -403,6 +403,14 @@ select {
   font-size: 0.95rem;
 }
 .score-row:last-child { border-bottom: none; }
+.role-badge-small {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-left: 6px;
+  opacity: 0.8;
+}
 .score-row .delta { font-weight: 700; }
 .score-row .delta.pos { color: var(--success); }
 .score-row .delta.neg { color: var(--accent2); }

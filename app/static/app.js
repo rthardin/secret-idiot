@@ -435,7 +435,7 @@
         const guess = b.mission_guess
           ? `<div class="burn-guess">"${esc(b.mission_guess)}"</div>`
           : "";
-        const vetoBtn = IS_HOST
+        const vetoBtn = (IS_HOST && b.correct)
           ? `<button class="veto-btn" data-burn-id="${esc(b.id)}">${b.vetoed ? "Un-veto" : "Veto"}</button>`
           : "";
         return `<div class="burn-row${b.vetoed ? " burn-row-vetoed" : ""}">
@@ -463,11 +463,15 @@
     }
 
     const lbCard = document.getElementById("leaderboard-card");
+    const roleLabel = { AGENT: "Agent", WITNESS: "Witness" };
     const deltaRows = (results.score_deltas || []).map((d) => {
       const sign = d.delta > 0 ? "+" : "";
       const cls  = d.delta > 0 ? "pos" : d.delta < 0 ? "neg" : "zero";
+      const badge = roleLabel[d.role]
+        ? `<span class="role-badge-small ${d.role.toLowerCase()}-color">${roleLabel[d.role]}</span>`
+        : "";
       return `<div class="score-row">
-        <span>${esc(d.name)}</span>
+        <span>${esc(d.name)}${badge}</span>
         <span><span class="delta ${cls}">${sign}${d.delta}</span><span class="total"> (${d.total} total)</span></span>
       </div>`;
     }).join("");
