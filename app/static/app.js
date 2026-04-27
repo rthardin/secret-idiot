@@ -116,8 +116,8 @@
     // Final leaderboard
     const lb = document.getElementById("gameover-leaderboard");
     const rows = (p.leaderboard || []).map((pl, i) => `
-      <div class="leaderboard-row">
-        <span class="rank">${i + 1}.</span>
+      <div class="leaderboard-row${i === 0 ? " leaderboard-winner" : ""}">
+        <span class="rank">${i === 0 ? "🏆" : `${i + 1}.`}</span>
         <span>${esc(pl.name)}</span>
         <span class="score">${pl.score}</span>
       </div>`).join("");
@@ -127,7 +127,7 @@
     const hist = document.getElementById("gameover-history");
     const outcomeLabels = {
       PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
-      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Sloppy Agent",
+      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Burner",
       FALSE_ACCUSATION: "False Accusation",
     };
     const hRows = (p.history || []).map((r) => {
@@ -411,7 +411,7 @@
 
     const outcomeLabels = {
       PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
-      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Sloppy Agent",
+      MISSION_FAILED: "Mission Failed", SLOPPY_AGENT: "Burner",
       FALSE_ACCUSATION: "False Accusation",
     };
     const chips = (results.outcomes || []).map((o) => {

@@ -121,7 +121,7 @@ def calculate_scores(db: Session, round_id: str) -> tuple[dict, list, list]:
         if agent_succeeded and witness_saw:
             deltas[agent_id] = deltas.get(agent_id, 0) + 2
             if witness_id:
-                deltas[witness_id] = deltas.get(witness_id, 0) + 2
+                deltas[witness_id] = deltas.get(witness_id, 0) + 1
             outcomes.append({"type": "PERFECT_CRIME"})
         elif agent_succeeded:
             deltas[agent_id] = deltas.get(agent_id, 0) + 1

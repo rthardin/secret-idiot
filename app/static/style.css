@@ -425,6 +425,8 @@ select {
   border-bottom: 1px solid var(--surface2);
 }
 .leaderboard-row:last-child { border-bottom: none; }
+.leaderboard-winner { background: rgba(124,106,247,0.1); border-radius: 8px; padding-left: 8px; padding-right: 8px; margin: 0 -8px; }
+.leaderboard-winner .score { color: var(--accent); }
 .leaderboard-row .rank { color: var(--text-dim); font-size: 0.85rem; width: 24px; }
 .leaderboard-row .score { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
 
