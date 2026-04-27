@@ -133,7 +133,7 @@
     };
     const hRows = (p.history || []).map((r) => {
       const chips = (r.outcomes || []).map((o) => {
-        const vetoStyle = o.vetoed ? ' style="opacity:0.4;text-decoration:line-through;"' : "";
+        const vetoStyle = (o.vetoed && o.type !== "FALSE_ACCUSATION") ? ' style="opacity:0.4;text-decoration:line-through;"' : "";
         return `<span class="outcome-chip outcome-${o.type}"${vetoStyle}>${outcomeLabels[o.type] || o.type}</span>`;
       }).join(" ");
       const burnDetails = (r.burns || []).map((b) => {
@@ -418,7 +418,7 @@
     const chips = (results.outcomes || []).map((o) => {
       const label = outcomeLabels[o.type] || o.type;
       const detail = o.accuser_name ? ` — ${esc(o.accuser_name)}` : "";
-      const vetoStyle = o.vetoed ? ' style="opacity:0.4;text-decoration:line-through;"' : "";
+      const vetoStyle = (o.vetoed && o.type !== "FALSE_ACCUSATION") ? ' style="opacity:0.4;text-decoration:line-through;"' : "";
       return `<span class="outcome-chip outcome-${o.type}"${vetoStyle}>${label}${detail}</span>`;
     }).join(" ");
     document.getElementById("outcomes-card").innerHTML =
