@@ -43,7 +43,7 @@ Environment variables:
 
 | Variable | Description |
 |---|---|
-| `DATABASE_URL` | SQLite path or Postgres URL (defaults to `sqlite:///./undercurrent.db`) |
+| `DATABASE_URL` | SQLite path or Postgres URL (defaults to `sqlite:///./secretidiot.db`) |
 | `ROUND_DURATION_MINUTES` | Default round duration if not set by host (defaults to `60`) |
 ## Discord notifications
 
