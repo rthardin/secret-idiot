@@ -1,112 +1,252 @@
 [
   {
-    "description": "Work the word \"gazpacho\" into a conversation naturally.",
+    "description": "The 'Antique' Shift: Refer to common objects by outdated names (e.g., 'pocket telegraph' for phone, 'davenport' for sofa) for the rest of the game.",
+    "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "description": "The Unearned Expert: Pick a boring topic (e.g., cardboard shelf-life) and pretend to be an obsessive enthusiast for at least 90 seconds.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
-    "description": "Use the phrase \"statistically speaking\" in a sentence without anyone prompting you.",
-    "difficulty": "EASY",
-    "category": "verbal"
+    "description": "The 'Parental' Reflex: Treat players like children (e.g., ask 'Did you wash your hands?' or 'Do you need a bathroom break?') then return to normal conversation.",
+    "difficulty": "MEDIUM",
+    "category": "social"
   },
   {
-    "description": "Casually mention a fictional small town called \"Millbrook\" as if it's a real place you've been.",
+    "description": "The Slow Clapper: Start a slow, rhythmic clap after someone finishes a sentence or a drink.",
     "difficulty": "HARD",
-    "category": "verbal"
+    "category": "social"
   },
   {
-    "description": "Say the word \"luminous\" while describing something — anything.",
+    "description": "The Sommelier of Water: Swirl your water glass, sniff it deeply, and describe its 'earthy notes' to whoever is nearest.",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
-    "description": "Work the phrase \"back in the day\" into a story you tell.",
-    "difficulty": "EASY",
+    "description": "The Narrator: Spend 30 seconds narrating another player's mundane actions in a hushed, documentary-style voice.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "The Echo: Repeat the last three words of someone else’s sentence under your breath, twice.",
+    "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
-    "description": "Mention a made-up celebrity named \"Derek Voss\" as if everyone should know who that is.",
-    "difficulty": "HARD",
-    "category": "verbal"
-  },
-  {
-    "description": "Use the word \"allegedly\" in a sentence about something completely mundane.",
-    "difficulty": "EASY",
-    "category": "verbal"
-  },
-  {
-    "description": "Move a throw pillow to a completely different piece of furniture.",
+    "description": "The Safety Inspector: Before sitting down, pick up the chair and inspect the bottom for a 'safety certification' mark.",
     "difficulty": "EASY",
     "category": "physical"
   },
   {
-    "description": "Rotate one item on a table or shelf so it faces a different direction.",
+    "description": "The Human Statue: During a conversation, freeze completely still for exactly 15 seconds, then resume as if nothing happened.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "description": "The Secret Agent: Lean into your own shoulder/sleeve and whisper 'The package is secure' while making eye contact with the Witness.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "The Corporate Pivot: Use at least five corporate buzzwords (e.g., 'synergy', 'touch base', 'low-hanging fruit') in a single story.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "The Mirror: Subtly but clearly mimic the exact physical posture of the person you are talking to for two full minutes.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "description": "The Invisible Barrier: Act as if there is an invisible wall between two pieces of furniture, refusing to walk between them.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "The One-Minute Delay: Answer a direct question exactly 60 seconds after it was asked.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "description": "The Thumb War: Attempt to initiate a thumb war with someone during a serious or quiet moment.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "The Nickname Generator: Give two different people nicknames based on tropical fruits and only use those names for the round.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "description": "The Yoga Master: Incorporate one obvious yoga pose (like 'Tree Pose') into a standing conversation for 30 seconds.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "The Sneeze Maestro: Sneeze three times, making each sneeze sound increasingly like a different musical note.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "The Imaginary Buddy: Reference a mutual 'friend' named Bartholomew and act surprised when others say they don't know him.",
+    "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "description": "The Sound Effect: Make a distinct 'whoosh' or 'boop' sound every time you sit down or stand up.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "description": "The Air Quotes: Use 'air quotes' around words that definitely don't require them (e.g., 'I’m going to the \"kitchen\" to get some \"water\"').",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "The Formal Bow: Give a deep, Victorian-style bow to anyone who performs a small favor for you (like passing a snack).",
     "difficulty": "EASY",
     "category": "physical"
   },
   {
-    "description": "Leave a random object (like a spoon or a remote) somewhere it clearly doesn't belong.",
+    "description": "The Flavor Profile: Ask someone what 'color' their food or drink tastes like, then disagree with their answer.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "description": "The Shadow Boxer: After making a point in a conversation, perform three quick, silent punches into the air.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
-    "description": "Flip a small decorative item upside down somewhere subtle.",
+    "description": "The Pen Pal: Ask someone for their physical mailing address so you can send them a 'formal follow-up' to this conversation.",
     "difficulty": "MEDIUM",
-    "category": "physical"
+    "category": "social"
   },
   {
-    "description": "Move an item from one room to another without anyone noticing.",
-    "difficulty": "HARD",
-    "category": "physical"
-  },
-  {
-    "description": "Stack something on top of something else that it clearly doesn't belong on.",
+    "description": "The Time Traveler: Refer to a common modern object (like a microwave or TV) as 'primitive technology' or 'a classic relic.'",
     "difficulty": "EASY",
-    "category": "physical"
+    "category": "verbal"
   },
   {
-    "description": "Get someone to count something out loud.",
+    "description": "The Background Music: Hum a suspenseful, movie-trailer style theme song while another player is telling a story.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "description": "The Hype Man: Introduce a player to someone they already know as if they are a world-famous celebrity.",
     "difficulty": "MEDIUM",
     "category": "social"
   },
   {
-    "description": "Get two people to high-five without suggesting it directly.",
+    "description": "The Acronym Enthusiast: Invent an acronym for a common object (e.g., 'Pass me the B.O.S.' for Bottle of Soda) and refuse to explain it.",
     "difficulty": "HARD",
-    "category": "social"
+    "category": "verbal"
   },
   {
-    "description": "Convince someone to sit somewhere different than their usual spot.",
-    "difficulty": "MEDIUM",
-    "category": "social"
-  },
-  {
-    "description": "Make someone laugh without being the one who told a joke.",
-    "difficulty": "MEDIUM",
-    "category": "social"
-  },
-  {
-    "description": "Get someone to check their phone within 10 minutes of the round starting.",
+    "description": "The Ghost Hunter: Suddenly stop, look at a corner of the room, and ask if anyone else 'felt that cold spot.'",
     "difficulty": "EASY",
     "category": "social"
   },
   {
-    "description": "Get someone else to bring you a drink without directly asking for one.",
+    "description": "The Professional Handshaker: Shake someone's hand for a full 10 seconds while maintaining intense eye contact.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "The Third Person: Refer to yourself in the third person for the duration of a single story or explanation.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "description": "The Prop Master: Pick up a kitchen utensil (like a whisk or spatula) and carry it with you as a 'talking stick' for 5 minutes.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "The Weather Reporter: Provide a detailed 5-day weather forecast for a city that is at least 1,000 miles away.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "The Silent Librarian: Shush the entire room loudly when the conversation is already at a reasonable volume.",
     "difficulty": "HARD",
     "category": "social"
   },
   {
-    "description": "Get someone to start a sentence with \"One time...\"",
+    "description": "The Pocket Sand: Pretend to throw 'invisible sand' at someone to 'distract them' while you walk away from a conversation.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "description": "The Fashion Police: Give a player a genuine, high-energy compliment on their 'brave and avant-garde' choice of socks.",
+    "difficulty": "EASY",
+    "category": "social"
+  },
+  {
+    "description": "The Slow Motion: Perform one entire task (like pouring a drink or putting on a jacket) in exaggerated slow motion.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "The Fortune Teller: Predict a very mundane event (e.g., 'Someone will say the word 'hungry' in the next 3 minutes') and celebrate if it happens.",
+    "difficulty": "EASY",
+    "category": "social"
+  },
+  {
+    "description": "The Director: Tell two people to 'reset the scene' and ask them to repeat their last interaction because the 'lighting was wrong.'",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "description": "The Compliment Sandwich: Give someone a compliment, followed by a confusingly specific insult, followed by another compliment.",
     "difficulty": "MEDIUM",
     "category": "social"
   },
   {
-    "description": "Get the group to agree to do something (a walk, a game, a snack run) that wasn't already planned.",
+    "description": "The Historical Footnote: Correct someone on a completely fabricated 'historical fact' about the house or building you are currently in.",
     "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "description": "The Animal Kingdom: Compare three different players to specific breeds of dogs and explain your reasoning in detail.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "description": "The Mime: Act as if you are stuck in an invisible box for exactly five seconds, then immediately stop and act normal.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "description": "The Unsolicited Advice: Give someone 'expert' advice on a better way to hold their phone or drink for 'maximum ergonomic efficiency.'",
+    "difficulty": "EASY",
     "category": "social"
   },
   {
-    "description": "Make two separate people mention the same topic (e.g. the weather, a movie, food) within the hour without connecting them.",
+    "description": "The Rhyme Time: Speak in rhyming couplets for three consecutive sentences during a group discussion.",
     "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "description": "The Missing Item: Ask the group if anyone has seen your 'emotional support stapler' (or another non-existent weird object).",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "description": "The Aggressive Tipping: Try to hand someone a nickel as a 'tip' for a very small favor, like passing the salt.",
+    "difficulty": "MEDIUM",
     "category": "social"
+  },
+  {
+    "description": "The Looming Presence: Stand slightly too close to a player (within their personal bubble) for 10 seconds, then walk away without a word.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "description": "The Inconspicuous Re-aligner: Identify a set of objects (coasters, chairs, pens) and slowly, over 10 minutes, align them perfectly parallel to one another.",
+    "difficulty": "HARD",
+    "category": "physical"
   }
 ]
