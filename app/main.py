@@ -637,6 +637,9 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         player.push_sub = payload.get("subscription")
         db.commit()
 
+    elif action == "REQUEST_SYNC":
+        await _send_state_sync(room_id, player_id, db)
+
 
 # ---------------------------------------------------------------------------
 # State sync builder

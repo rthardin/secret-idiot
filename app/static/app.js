@@ -58,6 +58,7 @@
 
   // ── State sync ────────────────────────────────────────────────────────────
   function onStateSync(p) {
+    document.getElementById("sync-overlay").classList.add("hidden");
     allPlayers = p.players || [];
 
     if (p.your_role) {
@@ -627,4 +628,25 @@
   // ── Init ──────────────────────────────────────────────────────────────────
   connect();
   registerSW();
+
+  // Re-sync when a backgrounded tab regains focus — browsers throttle timers
+  // while hidden, so the clock drifts and missed WS messages can leave stale UI.
+  // Only sync after 10s hidden: a brief tab switch doesn't cause drift, and
+  // syncing immediately would overwrite any in-progress form input on return.
+  let hiddenAt = null;
+  const SYNC_AFTER_MS = 10_000;
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") {
+      hiddenAt = Date.now();
+    } else {
+      if (hiddenAt !== null && Date.now() - hiddenAt >= SYNC_AFTER_MS) {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          document.getElementById("sync-overlay").classList.remove("hidden");
+          send("REQUEST_SYNC", {});
+        }
+        // If WS is closed the reconnect handler will fire and sync on connect.
+      }
+      hiddenAt = null;
+    }
+  });
 })();
