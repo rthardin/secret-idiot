@@ -176,7 +176,7 @@
     document.getElementById(id).classList.remove("hidden");
   }
 
-  const WEBHOOK_STORAGE_KEY = "undercurrent_discord_webhook";
+  const WEBHOOK_STORAGE_KEY = "secretidiot_discord_webhook";
 
   // LOBBY
   function showLobby(players) {
