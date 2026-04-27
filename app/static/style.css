@@ -391,7 +391,7 @@ select {
 .outcome-PERFECT_CRIME    { background: rgba(76,175,80,0.2); color: var(--success); }
 .outcome-HONORABLE_EFFORT { background: rgba(124,106,247,0.2); color: var(--accent); }
 .outcome-MISSION_FAILED   { background: rgba(233,69,96,0.15); color: var(--accent2); }
-.outcome-SLOPPY_AGENT     { background: rgba(255,152,0,0.2); color: var(--warning); }
+.outcome-SICK_BURN        { background: rgba(255,152,0,0.2); color: var(--warning); }
 .outcome-FALSE_ACCUSATION { background: rgba(233,69,96,0.15); color: var(--accent2); }
 
 .score-row {

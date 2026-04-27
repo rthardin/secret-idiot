@@ -222,7 +222,7 @@ _OUTCOME_LABELS = {
     "PERFECT_CRIME": "Perfect Crime",
     "HONORABLE_EFFORT": "Honorable Effort",
     "MISSION_FAILED": "Mission Failed",
-    "SLOPPY_AGENT": "Sick Burn",
+    "SICK_BURN": "Sick Burn",
     "FALSE_ACCUSATION": "False Accusation",
 }
 
