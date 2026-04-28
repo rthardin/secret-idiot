@@ -5,7 +5,7 @@ A real-time social deduction game for groups. One player is secretly the Agent w
 ## How it works
 
 - **Agent** — Complete your secret mission visibly enough for your Witness to confirm, but discreetly enough that the Crowd doesn't notice.
-- **Witness** — You know who the Agent is and what their mission is. Watch quietly. The Agent will come to you.
+- **Witness** — You know who the Agent is and what their mission is, but you're invisible to them. Watch quietly.
 - **Crowd** — You have no idea who the Agent is. Stay alert and burn them in the debrief if you catch on.
 
 After the round, everyone submits a debrief report. Crowd members can accuse (burn) someone they think was the Agent. The host can veto a correct burn if it was made for the wrong reason.
