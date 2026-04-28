@@ -1,11 +1,11 @@
 [
   {
-    "description": "The 'Antique' Shift: Refer to common objects by outdated names (e.g., 'pocket telegraph' for phone, 'davenport' for sofa) for the rest of the game.",
+    "description": "The 'Antique' Shift: Pick an object, then refer to it by an outdated name (e.g., 'pocket telegraph' for phone, 'davenport' for sofa) for the rest of the round.",
     "difficulty": "HARD",
     "category": "verbal"
   },
   {
-    "description": "The Unearned Expert: Pick a boring topic (e.g., cardboard shelf-life) and pretend to be an obsessive enthusiast for at least 90 seconds.",
+    "description": "The Unearned Expert: Pick a boring topic (e.g., history of cardboard) and pretend to be an obsessive enthusiast for at least 90 seconds.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
@@ -25,11 +25,6 @@
     "category": "verbal"
   },
   {
-    "description": "The Narrator: Spend 30 seconds narrating another player's mundane actions in a hushed, documentary-style voice.",
-    "difficulty": "MEDIUM",
-    "category": "social"
-  },
-  {
     "description": "The Echo: Repeat the last three words of someone else’s sentence under your breath, twice.",
     "difficulty": "MEDIUM",
     "category": "verbal"
@@ -43,11 +38,6 @@
     "description": "The Human Statue: During a conversation, freeze completely still for exactly 15 seconds, then resume as if nothing happened.",
     "difficulty": "HARD",
     "category": "physical"
-  },
-  {
-    "description": "The Secret Agent: Lean into your own shoulder/sleeve and whisper 'The package is secure' while making eye contact with the Witness.",
-    "difficulty": "MEDIUM",
-    "category": "social"
   },
   {
     "description": "The Corporate Pivot: Use at least five corporate buzzwords (e.g., 'synergy', 'touch base', 'low-hanging fruit') in a single story.",
@@ -118,11 +108,6 @@
     "description": "The Shadow Boxer: After making a point in a conversation, perform three quick, silent punches into the air.",
     "difficulty": "MEDIUM",
     "category": "physical"
-  },
-  {
-    "description": "The Pen Pal: Ask someone for their physical mailing address so you can send them a 'formal follow-up' to this conversation.",
-    "difficulty": "MEDIUM",
-    "category": "social"
   },
   {
     "description": "The Time Traveler: Refer to a common modern object (like a microwave or TV) as 'primitive technology' or 'a classic relic.'",
@@ -225,17 +210,12 @@
     "category": "social"
   },
   {
-    "description": "The Rhyme Time: Speak in rhyming couplets for three consecutive sentences during a group discussion.",
-    "difficulty": "HARD",
-    "category": "verbal"
-  },
-  {
     "description": "The Missing Item: Ask the group if anyone has seen your 'emotional support stapler' (or another non-existent weird object).",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
-    "description": "The Aggressive Tipping: Try to hand someone a nickel as a 'tip' for a very small favor, like passing the salt.",
+    "description": "The Aggressive Tipper: Try to hand someone a coin, bill, or token as a 'tip' for a very small favor, like passing the salt.",
     "difficulty": "MEDIUM",
     "category": "social"
   },
