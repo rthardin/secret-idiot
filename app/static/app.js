@@ -32,8 +32,8 @@
     };
 
     ws.onclose = () => {
-      console.log("[WS] disconnected — reconnecting in 2s");
-      setTimeout(connect, 2000);
+      document.getElementById("sync-overlay").classList.remove("hidden");
+      setTimeout(connect, 500);
     };
   }
 
@@ -613,7 +613,7 @@
           document.getElementById("sync-overlay").classList.remove("hidden");
           send("REQUEST_SYNC", {});
         }
-        // If WS is closed the reconnect handler will fire and sync on connect.
+        // If WS is closed, ws.onclose already shows the overlay and will reconnect.
       }
       hiddenAt = null;
     }
