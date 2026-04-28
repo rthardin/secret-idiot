@@ -105,6 +105,7 @@ class Mission(Base):
     __tablename__ = "missions"
 
     id = Column(String, primary_key=True, default=gen_uuid)
+    title = Column(String(100), nullable=True)
     description = Column(Text, nullable=False)
     difficulty = Column(Enum(Difficulty), default=Difficulty.EASY)
     category = Column(String(50), nullable=True)

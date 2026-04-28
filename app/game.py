@@ -13,6 +13,7 @@ def load_missions(db: Session):
     db.query(Mission).delete()
     for item in data:
         db.add(Mission(
+            title=item.get("title"),
             description=item["description"],
             difficulty=item.get("difficulty", "EASY"),
             category=item.get("category", "general"),
