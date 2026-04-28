@@ -16,7 +16,7 @@ After the round, everyone submits a debrief report. Crowd members can accuse (bu
 |---|---|
 | Perfect Crime | Agent +2, Witness +1 |
 | Honorable Effort (Witness missed it) | Agent +1 |
-| Burner (correct burn) | Burner +1, Agent −1 |
+| Sick Burn (correct burn) | Burner +1, Agent −1 |
 | False Accusation | Burner −1 |
 | Mission Failed | — |
 
