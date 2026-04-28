@@ -1,7 +1,7 @@
 [
   {
-    "title": "The 'Antique' Shift",
-    "description": "Pick an object, then refer to it by an outdated name (e.g., 'pocket telegraph' for phone, 'davenport' for sofa) for the rest of the round.",
+    "title": "The Antique Specialist",
+    "description": "Pick three different modern objects. You must use their \"archaic\" names at least twice each in separate conversations. (e.g., 'pocket telegraph' for phone, 'davenport' for sofa)",
     "difficulty": "HARD",
     "category": "verbal"
   },
@@ -42,8 +42,8 @@
     "category": "physical"
   },
   {
-    "title": "The Human Statue",
-    "description": "During a conversation, freeze completely still for exactly 15 seconds, then resume as if nothing happened.",
+    "title": "The Glitch",
+    "description": "Freeze for exactly 10 seconds whenever you hear a specific \"trigger word\" (e.g., \"thirsty,\" \"game,\" or \"food\").",
     "difficulty": "HARD",
     "category": "physical"
   },
@@ -55,7 +55,7 @@
   },
   {
     "title": "The Mirror",
-    "description": "Subtly but clearly mimic the exact physical posture of the person you are talking to for two full minutes.",
+    "description": "Pick a target. Every time they take a drink, you must immediately take a drink (real or invisible). Do this 5 times.",
     "difficulty": "HARD",
     "category": "physical"
   },
@@ -274,5 +274,263 @@
     "description": "Identify a set of objects (coasters, chairs, pens) and slowly, over 10 minutes, align them perfectly parallel to one another.",
     "difficulty": "HARD",
     "category": "physical"
+  },
+  {
+    "title": "The Culinary Critic",
+    "description": "After taking a bite of any food, give a 30-second review as if you are a judge on a high-stakes cooking show.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The Human Compass",
+    "description": "When you move to a different room, announce which cardinal direction (North, South, etc.) you are now facing.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The 'Pinky Out' Protocol",
+    "description": "Drink with your pinky finger dramatically extended.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "title": "The Invisible Hat",
+    "description": "When you enter or leave a conversation, perform a 'tip of the hat' gesture to the other person, despite wearing no hat.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "title": "The Standing Ovation",
+    "description": "Stand up and clap enthusiastically for 5 seconds when someone mentions they are going to get a refill or a snack.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "title": "The Name Game",
+    "description": "Exclusively refer to others as 'Captain' or 'Chief'.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "title": "The Slow-Motion High Five",
+    "description": "Initiate a high five with someone, but move your hand toward theirs in extreme slow motion (at least 10 seconds).",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "title": "The Translation Error",
+    "description": "Pretend to forget the common English word for a basic object (like 'fork' or 'door') and describe it poorly until someone else names it.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The Pulse Check",
+    "description": "Stop mid-sentence, check your own pulse on your neck for 10 seconds with a worried expression, then continue talking.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "title": "The Hype Specialist",
+    "description": "Whenever a friend mentions a mundane task they did today, respond with 'That is absolutely legendary.'",
+    "difficulty": "EASY",
+    "category": "social"
+  },
+  {
+    "title": "The Space Architect",
+    "description": "Use your hands to 'measure' the distance between two people talking, nodding thoughtfully as you do.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "title": "The Birthday Confusion",
+    "description": "Sincerely wish someone 'Happy Birthday.' When they say it's not their birthday, apologize and say, 'Oh, right, that was someone else.'",
+    "difficulty": "EASY",
+    "category": "social"
+  },
+  {
+    "title": "The Thumb-Tuck",
+    "description": "Keep both of your thumbs tucked into your palms and hidden inside your fists for ten minutes of conversation.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "title": "The Cinema Enthusiast",
+    "description": "Insert a quote from a famous movie into a conversation, but attribute it to the wrong movie (e.g., 'I'll be back - Star Wars').",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "title": "The One-Inch Move",
+    "description": "Every time someone finishes speaking, move your chair or your body exactly one inch closer to them.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "title": "The Invisible Cobweb",
+    "description": "Suddenly swat at the air in front of your face and complain about 'the ghost spiders' in this room.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "title": "The Synonym Specialist",
+    "description": "Replace every instance of the word 'yes' with 'indubitably' for the rest of the round.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The Dramatic Sigh",
+    "description": "Every time you take a sip of a drink, let out a long, satisfied 'Ahhhhh'.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "title": "The Reverse Exit",
+    "description": "Whenever you leave a room, walk backward the entire way out while maintaining eye contact with whoever is left behind.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "title": "The Life Coach",
+    "description": "Interrupt a story to suggest a 'breath-work exercise' and try to get the speaker to take three deep breaths with you.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "title": "The Question Mark",
+    "description": "End every sentence you speak for two minutes with a rising intonation, so everything sounds like a question.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The Coin Toss",
+    "description": "Flip a coin (or pretend to) before making any minor decision, like which chip to eat or where to sit.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "title": "The Stat Man",
+    "description": "Provide a completely made-up percentage statistic to support any point you make (e.g., 'Well, 64% of people prefer blue napkins').",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "title": "The Shadow",
+    "description": "Pick a 'target' player. Every time they stand up, you stand up. When they sit, you sit. Do this three times.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "title": "The Air Piano",
+    "description": "Briefly play an 'invisible piano' on the table or your knees whenever there is a lull in the conversation.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "title": "The Acronym Mystery",
+    "description": "Start referring to the current gathering as 'The O.P.P.' and refuse to say what it stands for.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The Formal Handshake",
+    "description": "Try to initiate a formal, three-pump handshake with someone you have already been hanging out with for over an hour.",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "title": "The Fashion Consultant",
+    "description": "Quietly tell someone their outfit is 'bold' and ask if they were inspired by 'early 90s corporate chic'.",
+    "difficulty": "EASY",
+    "category": "social"
+  },
+  {
+    "title": "The Slow Blink",
+    "description": "Whenever someone asks you a question, blink both eyes very slowly (taking at least 3 seconds) before answering.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "title": "The Background Extra",
+    "description": "Pick a person across the room and subtly mimic their arm movements while you are talking to someone else.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "title": "The Culinary Inventor",
+    "description": "Suggest a 'revolutionary' food combination (like pickles and peanut butter) and try to convince at least one person it’s a delicacy.",
+    "difficulty": "MEDIUM",
+    "category": "verbal"
+  },
+  {
+    "title": "The 'Wait For It'",
+    "description": "Stop talking in the middle of a sentence, hold up a finger as if you're about to say something vital, wait 10 seconds, then say 'Nevermind.'",
+    "difficulty": "MEDIUM",
+    "category": "social"
+  },
+  {
+    "title": "The Shoe Inspector",
+    "description": "Ask to see the bottom of someone's shoe to check the 'tread depth' for safety reasons.",
+    "difficulty": "HARD",
+    "category": "physical"
+  },
+  {
+    "title": "The Gentle Clapper",
+    "description": "Clap very softly, just with your fingertips, whenever you agree with a point someone makes.",
+    "difficulty": "EASY",
+    "category": "physical"
+  },
+  {
+    "title": "The Title Upgrade",
+    "description": "Insist on being called by a title like 'The Honorable' or 'Doctor' for a single five-minute conversation.",
+    "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "title": "The Pocket Surprise",
+    "description": "Reach into your pocket, pretend to find something invisible, and then 'release it' out the nearest window or door.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "title": "The Mime's Drink",
+    "description": "Pour an invisible drink into your actual glass, 'sip' it, and comment on its vintage.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "title": "The Conspiracy Theorist",
+    "description": "Whisper to someone that you think the host's refrigerator is 'humming in B-flat' and ask if they think it's a code.",
+    "difficulty": "HARD",
+    "category": "verbal"
+  },
+  {
+    "title": "The Compliment Loop",
+    "description": "Give the same person the exact same compliment three times within ten minutes, acting like it's the first time each time.",
+    "difficulty": "HARD",
+    "category": "social"
+  },
+  {
+    "title": "The 'Old-Timey' Slang",
+    "description": "Use the word 'skedaddle' or 'malarkey' in a sentence without laughing.",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "title": "The Imaginary Mosquito",
+    "description": "Spend a full minute trying to 'catch' a non-existent bug in the air with your hands.",
+    "difficulty": "MEDIUM",
+    "category": "physical"
+  },
+  {
+    "title": "The Fact Checker",
+    "description": "Wait for someone to say a number (any number), then quickly say 'Actually, it's [that number plus one].'",
+    "difficulty": "EASY",
+    "category": "verbal"
+  },
+  {
+    "title": "The High-Stakes Toast",
+    "description": "Clink your glass and propose a toast to 'the inevitable passage of time.'",
+    "difficulty": "MEDIUM",
+    "category": "social"
   }
 ]
