@@ -12,6 +12,7 @@
   let tutorialSeen = false;
   let myRole = null;
   let myMission = null;
+  let myMissionTitle = null;
   let myAgentName = null;
   let myAgentMission = null;
   let timerInterval = null;
@@ -63,6 +64,7 @@
     if (p.your_role) {
       myRole = p.your_role;
       myMission = p.your_mission || null;
+      myMissionTitle = p.your_mission_title || null;
       myAgentName = p.agent_name || null;
       myAgentMission = p.agent_mission || null;
     }
@@ -95,6 +97,7 @@
   function onRoleAssigned(p) {
     myRole = p.role;
     myMission = p.mission_text || null;
+    myMissionTitle = p.mission_title || null;
     myAgentName = p.agent_name || null;
     myAgentMission = p.agent_mission || null;
     applyRoleCard();
@@ -292,6 +295,7 @@
     crowdHint.classList.add("hidden");
 
     if (myRole === "AGENT" && myMission) {
+      setText("mission-title", myMissionTitle || "");
       setText("mission-text", myMission);
       missionBlock.classList.remove("hidden");
     } else if (myRole === "WITNESS") {
