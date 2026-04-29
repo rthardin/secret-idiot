@@ -1,6 +1,8 @@
 # Secret Idiot
 
-A real-time social deduction game for groups. One player is secretly the Agent with a covert mission. Everyone else tries to figure out who it is.
+You're a secret agent. Unfortunately, you're also an idiot.
+
+Secret Idiot is a real-time social deduction game for groups. One player is secretly the Agent with a covert mission. Everyone else tries to figure out who it is.
 
 ## How it works
 
