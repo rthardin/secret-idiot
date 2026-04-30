@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from enum import Enum as PyEnum
-from sqlalchemy import Column, String, Integer, DateTime, JSON, ForeignKey, Enum, Boolean, Text
+from sqlalchemy import Column, String, Integer, DateTime, JSON, ForeignKey, Enum, Boolean, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 from .database import Base
 
@@ -109,6 +109,18 @@ class Mission(Base):
     description = Column(Text, nullable=False)
     difficulty = Column(Enum(Difficulty), default=Difficulty.EASY)
     category = Column(String(50), nullable=True)
+
+
+class MissionVote(Base):
+    __tablename__ = "mission_votes"
+
+    id = Column(String, primary_key=True, default=gen_uuid)
+    round_id = Column(String, ForeignKey("rounds.id"), nullable=False)
+    player_id = Column(String, ForeignKey("players.id"), nullable=False)
+    mission_id = Column(String, ForeignKey("missions.id"), nullable=False)
+    vote = Column(Boolean, nullable=False)  # True = thumbs up, False = thumbs down
+
+    __table_args__ = (UniqueConstraint("round_id", "player_id"),)
 
 
 class DebriefReport(Base):

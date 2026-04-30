@@ -1,0 +1,60 @@
+name: Update Mission Stats
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 6 AM UTC
+  workflow_dispatch:       # Manual trigger from the Actions tab
+
+jobs:
+  update-stats:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch mission stats
+        run: curl -sf "${{ secrets.APP_URL }}/api/mission-stats" -o mission_stats.json
+
+      - name: Generate MISSION_STATS.md
+        run: |
+          python3 - <<'EOF'
+          import json, datetime
+
+          with open("mission_stats.json") as f:
+              missions = json.load(f)
+
+          voted = [m for m in missions if m["total_votes"] > 0]
+
+          lines = [
+              "# Mission Feedback",
+              "",
+              f"_Updated {datetime.date.today().isoformat()} · Refreshed weekly · {len(voted)} of {len(missions)} missions rated_",
+              "",
+              "| Mission | 👍 | 👎 | Approval |",
+              "|---|---|---|---|",
+          ]
+
+          for m in voted:
+              title = m["title"] or m["description"][:60]
+              lines.append(f"| {title} | {m['upvotes']} | {m['downvotes']} | {m['approval']}% |")
+
+          if not voted:
+              lines.append("| _No votes recorded yet_ | — | — | — |")
+
+          with open("MISSION_STATS.md", "w") as f:
+              f.write("\n".join(lines) + "\n")
+          EOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add MISSION_STATS.md
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update mission stats [skip ci]"
+            git push
+          fi

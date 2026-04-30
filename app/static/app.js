@@ -19,6 +19,7 @@
   let timeRemainingMs = 0;
   let allPlayers = [];   // [{id, name, score, is_host}]
   let lastResults = null;
+  let myVote = null;
   let reconnectOverlayTimer = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
@@ -56,6 +57,7 @@
       case "ROLE_ASSIGNED":     onRoleAssigned(msg.payload); break;
       case "PLAYER_JOINED":     /* handled via full state sync */ break;
       case "ROUND_RESULTS":     onRoundResults(msg.payload); break;
+      case "VOTE_RECORDED":     onVoteRecorded(msg.payload); break;
       case "DEBRIEF_SUBMITTED": onDebriefSubmitted(msg.payload); break;
       case "GAME_OVER":         onGameOver(msg.payload);     break;
       case "ERROR":             alert(msg.payload.message);  break;
@@ -92,6 +94,7 @@
                     p.your_role, p.your_mission, p.agent_name, p.agent_mission);
         break;
       case "ROUND_SUMMARY":
+        myVote = p.has_voted || null;
         if (lastResults) showSummary(lastResults);
         break;
       case "GAME_OVER":
@@ -417,7 +420,17 @@
       <h2>The Mission</h2>
       <div class="reveal-row"><span class="label">Agent</span><span class="value">${esc(results.agent_name || "?")}</span></div>
       <div class="reveal-row"><span class="label">Witness</span><span class="value">${esc(results.witness_name || "?")}</span></div>
-      <div class="reveal-row"><span class="label">Mission</span><span class="value" style="max-width:60%;text-align:right;">${esc(results.mission || "?")}</span></div>`;
+      <div class="reveal-row"><span class="label">Mission</span><span class="value" style="max-width:60%;text-align:right;">${esc(results.mission || "?")}</span></div>
+      <div class="vote-row">
+        <span class="vote-label">Rate this mission</span>
+        <div class="vote-buttons">
+          <button class="vote-btn vote-up" aria-label="Thumbs up">👍</button>
+          <button class="vote-btn vote-down" aria-label="Thumbs down">👎</button>
+        </div>
+      </div>`;
+    reveal.querySelector(".vote-up").addEventListener("click", () => submitVote("up"));
+    reveal.querySelector(".vote-down").addEventListener("click", () => submitVote("down"));
+    applyVoteState(myVote);
 
     const outcomeLabels = {
       PERFECT_CRIME: "Perfect Crime", HONORABLE_EFFORT: "Honorable Effort",
@@ -492,6 +505,25 @@
     ).join("");
     lbCard.innerHTML = `<h2>This Round</h2>${deltaRows}
       <div style="margin-top:12px;"><h2 style="margin-bottom:8px;">Leaderboard</h2>${lbRows}</div>`;
+  }
+
+  function submitVote(vote) {
+    myVote = vote;
+    applyVoteState(myVote);
+    send("SUBMIT_VOTE", { vote });
+  }
+
+  function onVoteRecorded(p) {
+    myVote = p.vote;
+    applyVoteState(myVote);
+  }
+
+  function applyVoteState(vote) {
+    const upBtn = document.querySelector(".vote-up");
+    const downBtn = document.querySelector(".vote-down");
+    if (!upBtn || !downBtn) return;
+    upBtn.classList.toggle("vote-active", vote === "up");
+    downBtn.classList.toggle("vote-active", vote === "down");
   }
 
   // ── Timer ──────────────────────────────────────────────────────────────────
