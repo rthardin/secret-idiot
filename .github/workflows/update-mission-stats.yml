@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v5
@@ -47,14 +48,25 @@ jobs:
               f.write("\n".join(lines) + "\n")
           EOF
 
-      - name: Commit and push
+      - name: Open PR with updated stats
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          BRANCH="stats/weekly-update"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B "$BRANCH"
           git add MISSION_STATS.md
           if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: update mission stats [skip ci]"
-            git push
+            echo "No changes since last update — skipping PR"
+            exit 0
+          fi
+          git commit -m "chore: update mission stats"
+          git push origin "$BRANCH" --force
+          if ! gh pr view "$BRANCH" --json number -q .number 2>/dev/null; then
+            gh pr create \
+              --title "chore: update mission stats" \
+              --body "Weekly automated update to \`MISSION_STATS.md\`. Approve and merge to publish." \
+              --base main \
+              --head "$BRANCH"
           fi
