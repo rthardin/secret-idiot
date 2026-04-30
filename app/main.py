@@ -14,7 +14,7 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
 from sqlalchemy import inspect, text
-from .database import Base, SessionLocal, engine, get_db
+from .database import Base, DATABASE_URL, SessionLocal, engine, get_db
 from .game import assign_roles, calculate_scores, load_missions
 from .models import (
     Assignment,
@@ -55,6 +55,52 @@ async def startup():
         load_missions(db)
     finally:
         db.close()
+    asyncio.create_task(_cleanup_worker())
+
+
+async def _cleanup_worker():
+    """Delete rooms older than 30 days and vacuum the database, once per day."""
+    while True:
+        await asyncio.sleep(24 * 60 * 60)
+        try:
+            _delete_old_rooms()
+            _vacuum_db()
+        except Exception as exc:
+            print(f"[cleanup] error: {exc}")
+
+
+def _delete_old_rooms():
+    cutoff = datetime.utcnow() - timedelta(days=30)
+    db = SessionLocal()
+    try:
+        old_room_ids = [
+            r.id for r in db.query(Room.id).filter(Room.created_at < cutoff).all()
+        ]
+        if not old_room_ids:
+            return
+        old_round_ids = [
+            r.id for r in db.query(Round.id).filter(Round.room_id.in_(old_room_ids)).all()
+        ]
+        if old_round_ids:
+            db.query(DebriefReport).filter(DebriefReport.round_id.in_(old_round_ids)).delete(synchronize_session=False)
+            db.query(Assignment).filter(Assignment.round_id.in_(old_round_ids)).delete(synchronize_session=False)
+            db.query(Round).filter(Round.id.in_(old_round_ids)).delete(synchronize_session=False)
+        db.query(Player).filter(Player.room_id.in_(old_room_ids)).delete(synchronize_session=False)
+        db.query(Room).filter(Room.id.in_(old_room_ids)).delete(synchronize_session=False)
+        db.commit()
+        print(f"[cleanup] deleted {len(old_room_ids)} room(s) older than 30 days")
+    finally:
+        db.close()
+
+
+def _vacuum_db():
+    is_sqlite = DATABASE_URL.startswith("sqlite")
+    with engine.connect() as conn:
+        if is_sqlite:
+            conn.execute(text("VACUUM"))
+        else:
+            conn.execution_options(isolation_level="AUTOCOMMIT").execute(text("VACUUM ANALYZE"))
+    print("[cleanup] vacuum complete")
 
 
 def _migrate_db():
