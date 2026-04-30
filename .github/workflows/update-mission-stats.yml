@@ -12,7 +12,7 @@ jobs:
       contents: write
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Fetch mission stats
         run: curl -sf "${{ secrets.APP_URL }}/api/mission-stats" -o mission_stats.json
