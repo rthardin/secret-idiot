@@ -20,26 +20,20 @@
   let allPlayers = [];   // [{id, name, score, is_host}]
   let lastResults = null;
   let myVote = null;
-  let reconnectOverlayTimer = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
   function connect() {
     const proto = location.protocol === "https:" ? "wss:" : "ws:";
     ws = new WebSocket(`${proto}//${location.host}/ws/${ROOM_CODE}/${PLAYER_ID}/${SESSION_TOKEN}`);
 
-    ws.onopen = () => {
-      clearTimeout(reconnectOverlayTimer);
-      console.log("[WS] connected");
-    };
+    ws.onopen = () => console.log("[WS] connected");
 
     ws.onmessage = (e) => {
       try { dispatch(JSON.parse(e.data)); } catch (err) { console.error(err); }
     };
 
     ws.onclose = () => {
-      reconnectOverlayTimer = setTimeout(() => {
-        document.getElementById("sync-overlay").classList.remove("hidden");
-      }, 500);
+      document.getElementById("sync-overlay").classList.remove("hidden");
       connect();
     };
   }
