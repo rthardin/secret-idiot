@@ -20,6 +20,7 @@ from .models import (
     Assignment,
     DebriefReport,
     Mission,
+    MissionVote,
     Player,
     ReportType,
     Role,
@@ -82,6 +83,7 @@ def _delete_old_rooms():
             r.id for r in db.query(Round.id).filter(Round.room_id.in_(old_room_ids)).all()
         ]
         if old_round_ids:
+            db.query(MissionVote).filter(MissionVote.round_id.in_(old_round_ids)).delete(synchronize_session=False)
             db.query(DebriefReport).filter(DebriefReport.round_id.in_(old_round_ids)).delete(synchronize_session=False)
             db.query(Assignment).filter(Assignment.round_id.in_(old_round_ids)).delete(synchronize_session=False)
             db.query(Round).filter(Round.id.in_(old_round_ids)).delete(synchronize_session=False)
@@ -219,6 +221,35 @@ async def game_page(
             "join_code": join_code.upper(),
         },
     )
+
+
+@app.get("/api/mission-stats")
+async def mission_stats(db: Session = Depends(get_db)):
+    missions = db.query(Mission).all()
+    votes_raw = db.query(MissionVote).all()
+    tally: dict[str, dict] = {}
+    for mv in votes_raw:
+        if mv.mission_id not in tally:
+            tally[mv.mission_id] = {"up": 0, "down": 0}
+        if mv.vote:
+            tally[mv.mission_id]["up"] += 1
+        else:
+            tally[mv.mission_id]["down"] += 1
+    result = []
+    for m in missions:
+        v = tally.get(m.id, {"up": 0, "down": 0})
+        total = v["up"] + v["down"]
+        result.append({
+            "id": m.id,
+            "title": m.title,
+            "description": m.description,
+            "upvotes": v["up"],
+            "downvotes": v["down"],
+            "total_votes": total,
+            "approval": round(v["up"] / total * 100) if total > 0 else None,
+        })
+    result.sort(key=lambda x: (x["total_votes"] == 0, -(x["approval"] or 0), -x["total_votes"]))
+    return result
 
 
 # ---------------------------------------------------------------------------
@@ -384,6 +415,7 @@ async def _finish_debrief(room_id: str, db: Session):
         "agent_name": agent_asgn.player.name if agent_asgn else None,
         "witness_name": witness_asgn.player.name if witness_asgn else None,
         "mission": agent_asgn.mission.description if (agent_asgn and agent_asgn.mission) else None,
+        "mission_id": agent_asgn.mission.id if (agent_asgn and agent_asgn.mission) else None,
         "outcomes": outcomes,
         "burns": burns,
         "score_deltas": sorted(
@@ -671,6 +703,36 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
             return
         await _end_game(room, db)
 
+    elif action == "SUBMIT_VOTE":
+        if room.current_state != RoomState.ROUND_SUMMARY:
+            return
+        rnd = (
+            db.query(Round)
+            .filter_by(room_id=room.id)
+            .order_by(Round.round_number.desc())
+            .first()
+        )
+        if not rnd or not rnd.results_json:
+            return
+        mission_id = rnd.results_json.get("mission_id")
+        if not mission_id:
+            return
+        vote_value = payload.get("vote")
+        if vote_value not in ("up", "down"):
+            return
+        existing = db.query(MissionVote).filter_by(round_id=rnd.id, player_id=player.id).first()
+        if existing:
+            existing.vote = (vote_value == "up")
+        else:
+            db.add(MissionVote(
+                round_id=rnd.id,
+                player_id=player.id,
+                mission_id=mission_id,
+                vote=(vote_value == "up"),
+            ))
+        db.commit()
+        await manager.send(room.id, player.id, {"event": "VOTE_RECORDED", "payload": {"vote": vote_value}})
+
     elif action == "REQUEST_SYNC":
         await _send_state_sync(room_id, player_id, db)
 
@@ -746,6 +808,8 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
 
     if room.current_state == RoomState.ROUND_SUMMARY and rnd and rnd.results_json:
         payload["results"] = rnd.results_json
+        vote = db.query(MissionVote).filter_by(round_id=rnd.id, player_id=player_id).first()
+        payload["has_voted"] = ("up" if (vote and vote.vote) else "down" if vote else None)
 
     if room.current_state == RoomState.GAME_OVER and room.game_over_json:
         payload["game_over"] = room.game_over_json

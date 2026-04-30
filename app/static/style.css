@@ -555,3 +555,27 @@ select {
 .history-round { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-dim); }
 .history-agent { font-size: 0.85rem; font-weight: 600; color: var(--agent); }
 .history-mission { font-size: 0.9rem; color: var(--text); }
+
+/* ── Mission vote buttons ──────────────────────────────────────── */
+.vote-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 4px;
+  border-top: 1px solid var(--surface2);
+  margin-top: 4px;
+}
+.vote-label { font-size: 0.85rem; color: var(--text-dim); }
+.vote-buttons { display: flex; gap: 8px; }
+.vote-btn {
+  background: var(--surface2);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: 6px 12px;
+  transition: border-color 0.15s, background 0.15s;
+}
+.vote-btn:hover { background: var(--surface); border-color: var(--text-dim); }
+.vote-btn.vote-active { border-color: var(--accent); background: var(--surface); }
