@@ -647,7 +647,7 @@
       // drop the animation entirely because rendering was suspended during the dialog.
       requestAnimationFrame(() => requestAnimationFrame(() => {
         card.classList.add("evidence-eating");
-        setTimeout(() => send("EAT_EVIDENCE", {}), 400);
+        setTimeout(() => send("EAT_EVIDENCE", {}), 500);
       }));
     }
   });
