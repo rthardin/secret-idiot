@@ -432,9 +432,7 @@ select {
 .outcome-PERFECT_CRIME    { background: rgba(76,175,80,0.2); color: var(--success); }
 .outcome-HONORABLE_EFFORT { background: rgba(124,106,247,0.2); color: var(--accent); }
 .outcome-MISSION_FAILED   { background: rgba(233,69,96,0.15); color: var(--accent2); }
-.outcome-SICK_BURN        { background: rgba(255,152,0,0.2); color: var(--warning);
-  animation: chipPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both,
-             sickBurnFire 2.2s 0.3s ease-out both; }
+.outcome-SICK_BURN        { background: rgba(255,152,0,0.2); color: var(--warning); }
 .outcome-FALSE_ACCUSATION { background: rgba(233,69,96,0.15); color: var(--accent2); }
 
 .score-row {
@@ -677,6 +675,11 @@ select {
 .outcome-chip { animation: chipPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
 /* ── Sick Burn fire effect (fades out after ~2s) ────────────────── */
+/* Two-class selector beats .outcome-chip so the animation isn't overridden */
+.outcome-chip.outcome-SICK_BURN {
+  animation: chipPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+             sickBurnFire 2.2s 0.3s ease-out both;
+}
 @keyframes sickBurnFire {
   0%   { box-shadow: none; }
   8%   { box-shadow: 0 0 10px 3px rgba(255,80,0,0.85), 0 0 22px 8px rgba(255,40,0,0.45);  color: #ff4400; background: rgba(255,90,0,0.35); }
