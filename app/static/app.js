@@ -400,7 +400,7 @@
       container.innerHTML = `
         <p class="debrief-question">Did you notice anything suspicious?</p>
         <div class="radio-group">
-          <label><input type="radio" name="report" value="NO_SUSPICION" checked> Nothing suspicious</label>
+          <label><input type="radio" name="report" value="NO_SUSPICION"> Nothing suspicious</label>
           <label><input type="radio" name="report" value="BURN" id="burn-radio"> I want to burn someone</label>
         </div>
         <div id="burn-details" class="hidden" style="display:flex;flex-direction:column;gap:10px;margin-top:8px;">
