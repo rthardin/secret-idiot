@@ -271,7 +271,7 @@ input[type="text"]::placeholder { color: var(--text-dim); }
   color: var(--text-dim);
   font-style: italic;
 }
-.quote-text em { font-style: normal; }
+.quote-text em { font-style: normal; font-weight: 600; }
 
 /* ── Host controls ─────────────────────────────────────────────── */
 .host-controls { display: flex; flex-direction: column; gap: 8px; }
