@@ -303,12 +303,14 @@
 
     const missionBlock  = document.getElementById("mission-block");
     const witnessBlock  = document.getElementById("witness-block");
+    const agentHint     = document.getElementById("agent-hint");
     const witnessHint   = document.getElementById("witness-hint");
     const crowdHint     = document.getElementById("crowd-hint");
     const eatBtn        = document.getElementById("eat-evidence-btn");
 
     missionBlock.classList.add("hidden");
     witnessBlock.classList.add("hidden");
+    agentHint.classList.add("hidden");
     witnessHint.classList.add("hidden");
     crowdHint.classList.add("hidden");
 
@@ -317,6 +319,7 @@
         setText("mission-title", myMissionTitle || "");
         setText("mission-text", myMission);
         missionBlock.classList.remove("hidden");
+        agentHint.classList.remove("hidden");
       } else if (myRole === "WITNESS") {
         if (myAgentName) {
           setText("witness-agent-name", myAgentName);
