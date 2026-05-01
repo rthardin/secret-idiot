@@ -151,6 +151,8 @@ input[type="text"]::placeholder { color: var(--text-dim); }
 .btn-primary  { background: var(--accent); color: #fff; }
 .btn-secondary { background: var(--surface2); color: var(--text); }
 .btn-ghost { background: transparent; color: var(--text-dim); border: 1px solid var(--surface2); }
+.btn-ghost[data-role="agent"]   { border-color: #4a1020; }
+.btn-ghost[data-role="witness"] { border-color: #104060; }
 .btn-danger { color: var(--accent2); border-color: var(--accent2); }
 
 /* ── Player list ───────────────────────────────────────────────── */

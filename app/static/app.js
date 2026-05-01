@@ -333,6 +333,7 @@
 
     const showEatBtn = !evidenceEaten && (myRole === "AGENT" || myRole === "WITNESS");
     eatBtn.classList.toggle("hidden", !showEatBtn);
+    eatBtn.dataset.role = myRole ? myRole.toLowerCase() : "";
 
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
