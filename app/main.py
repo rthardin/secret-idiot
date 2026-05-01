@@ -516,6 +516,7 @@ async def _finish_debrief(room_id: str, db: Session):
     })
 
     await manager.broadcast(room_id, {"event": "ROUND_RESULTS", "payload": results})
+    await _broadcast_state(room_id, db)
 
 
 async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
