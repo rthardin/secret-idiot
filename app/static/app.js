@@ -344,23 +344,31 @@
     eatBtn.classList.toggle("hidden", !showEatBtn);
     eatBtn.dataset.role = myRole ? myRole.toLowerCase() : "";
 
+    const howtoplayVisible = !document.getElementById("howtoplay-overlay").classList.contains("hidden");
+
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
       setText("quote-heading", roundQuote.heading);
       const quoteEl = document.getElementById("quote-text");
-      if (typedQuoteText !== roundQuote.text) {
+      if (!howtoplayVisible && typedQuoteText !== roundQuote.text) {
         typedQuoteText = roundQuote.text;
         typewriterEffect(quoteEl, roundQuote.text);
+      } else if (howtoplayVisible) {
+        // Show static text while overlay is up; don't mark as typed so
+        // teletype plays once the player dismisses the overlay.
+        setFormattedText(quoteEl, roundQuote.text);
       }
       quoteBlock.classList.remove("hidden");
     } else {
       quoteBlock.classList.add("hidden");
     }
 
-    // Role card entrance pop
-    card.classList.remove("role-card-reveal");
-    void card.offsetWidth;
-    card.classList.add("role-card-reveal");
+    // Role card entrance pop — defer until overlay is dismissed
+    if (!howtoplayVisible) {
+      card.classList.remove("role-card-reveal");
+      void card.offsetWidth;
+      card.classList.add("role-card-reveal");
+    }
   }
 
   // DEBRIEF
@@ -629,6 +637,7 @@
   on("howtoplay-close-btn", "click", () => {
     tutorialSeen = true;
     document.getElementById("howtoplay-overlay").classList.add("hidden");
+    applyRoleCard(); // now plays card reveal + teletype with overlay gone
   });
   on("eat-evidence-btn", "click", () => {
     if (confirm("Eat the evidence? Your card will look like a Crowd card for the rest of the round — you won't be able to recover your mission. This can't be undone.")) {
