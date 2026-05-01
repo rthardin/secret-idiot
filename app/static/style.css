@@ -691,6 +691,30 @@ select {
   100% { box-shadow: none; color: var(--warning); background: rgba(255,152,0,0.2); }
 }
 
+/* ── Perfect Crime emerald glint ────────────────────────────────── */
+.outcome-chip.outcome-PERFECT_CRIME {
+  position: relative;
+  overflow: hidden;
+}
+.outcome-chip.outcome-PERFECT_CRIME::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    108deg,
+    transparent 38%,
+    rgba(255,255,255,0.65) 50%,
+    rgba(180,255,210,0.4) 56%,
+    transparent 66%
+  );
+  transform: translateX(-100%);
+  animation: emeraldGlint 0.5s 0.4s ease-in-out both;
+}
+@keyframes emeraldGlint {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(220%); }
+}
+
 /* ── Score-row staggered reveal ─────────────────────────────────── */
 @keyframes deltaReveal {
   from { opacity: 0; transform: translateX(-10px); }
