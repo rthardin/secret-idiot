@@ -142,6 +142,7 @@ input[type="text"]::placeholder { color: var(--text-dim); }
   border: none;
   font-size: 1rem;
   font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
   transition: opacity 0.15s, transform 0.1s;
 }
@@ -264,10 +265,8 @@ input[type="text"]::placeholder { color: var(--text-dim); }
   text-align: left;
 }
 .quote-heading {
-  font-family: 'Space Mono', monospace;
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-family: 'Courier Prime', Georgia, serif;
+  font-size: 0.95rem;
   color: var(--text-dim);
   margin-bottom: 8px;
 }
@@ -363,7 +362,7 @@ input[type="text"]::placeholder { color: var(--text-dim); }
 }
 
 /* ── Debrief form ──────────────────────────────────────────────── */
-.radio-group { display: flex; flex-direction: column; gap: 10px; }
+.radio-group { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
 .radio-group label {
   display: flex;
   align-items: center;
@@ -380,7 +379,7 @@ input[type="text"]::placeholder { color: var(--text-dim); }
 .radio-group input[type="radio"] { accent-color: var(--accent); width: 18px; height: 18px; }
 
 .debrief-question { font-size: 1rem; font-weight: 500; }
-.mission-reminder { font-style: italic; color: var(--text-dim); font-size: 0.9rem; }
+.mission-reminder { font-style: italic; color: var(--text-dim); font-size: 0.9rem; margin-top: 8px; }
 
 select {
   width: 100%;
