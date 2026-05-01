@@ -134,6 +134,7 @@ input[type="text"] {
 }
 input[type="text"]:focus { border-color: var(--accent); }
 input[type="text"]::placeholder { color: var(--text-dim); }
+input[type="text"] + .btn { margin-top: 8px; }
 
 /* ── Buttons ───────────────────────────────────────────────────── */
 .btn {
