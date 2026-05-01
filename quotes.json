@@ -9,7 +9,7 @@
   },
   {
     "heading": "AGENT PROTOCOL:",
-    "body": "If you must blend in, remember: the loudest person in the room is never the one anyone's watching."
+    "body": "If you must blend in, remember: the loudest person in the room is <em>never</em> the one anyone's watching."
   },
   {
     "heading": "AGENT PROTOCOL:",
@@ -33,7 +33,7 @@
   },
   {
     "heading": "CLASSIFIED ADVISORY:",
-    "body": "Deny everything. Especially this sentence."
+    "body": "Deny everything. <em>Especially</em> this sentence."
   },
   {
     "heading": "FIELD OBSERVATION:",
@@ -53,11 +53,11 @@
   },
   {
     "heading": "OPERATIONAL NONSENSE:",
-    "body": "Amateur spies worry about being caught. <strong>Professional spies</strong> worry about catching themselves."
+    "body": "Amateur spies worry about being caught. <em>Professional spies</em> worry about catching themselves."
   },
   {
     "heading": "FIELD OBSERVATION:",
-    "body":"The secret to a good disguise is a very large hat and a look of mild annoyance."
+    "body":"The secret to a good disguise is a <em>very</em> large hat and a look of mild annoyance."
   },
   {
     "heading": "INTERNAL MEMO:",
@@ -69,11 +69,11 @@
   },
   {
     "heading": "INTERNAL MEMO:",
-    "body": "This agency has never, officially, existed. Thank you for your continued <strong>nonexistent</strong> service."
+    "body": "This agency has never, officially, existed. Thank you for your continued <em>nonexistent</em> service."
   },
   {
     "heading": "CLASSIFIED ADVISORY:",
-    "body": "If you find a burner phone, do not actually burn it. It is a metaphor."
+    "body": "If you find a burner phone, do not <em>actually</em> burn it. It is a metaphor."
   },
   {
     "heading": "INTERNAL MEMO:",
@@ -81,7 +81,7 @@
   },
   {
     "heading": "AGENT PROTOCOL:",
-    "body": "When caught doing something suspicious, the correct response is: <strong>\"Oh, this? I do this all the time.\"</strong>"
+    "body": "When caught doing something suspicious, the correct response is: <em>\"Oh, this? I do this all the time.\"</em>"
   },
   {
     "heading": "INTERNAL MEMO:",
@@ -89,7 +89,7 @@
   },
   {
     "heading": "CLASSIFIED ADVISORY:",
-    "body": "Keep your eyes peeled. No, not literally. That would be a medical emergency."
+    "body": "Keep your eyes peeled. No, not <em>literally</em>. That would be a medical emergency."
   },
   {
     "heading": "OPERATIONAL NONSENSE:",
@@ -101,6 +101,6 @@
   },
   {
     "heading": "FIELD OBSERVATION:",
-    "body": "If someone asks for the rules again, they are either confused or stalling for time. Interrogate them."
+    "body": "If someone asks for the rules again, they are either confused or stalling for time. <em>Interrogate them.</em>"
   }
 ]
