@@ -15,14 +15,24 @@ def load_quotes() -> list:
 
 def load_missions(db: Session):
     data = json.loads(MISSIONS_FILE.read_text())
-    db.query(Mission).delete()
     for item in data:
-        db.add(Mission(
-            title=item.get("title"),
-            description=item["description"],
-            difficulty=item.get("difficulty", "EASY"),
-            category=item.get("category", "general"),
-        ))
+        title = item.get("title")
+        description = item["description"]
+        existing = (db.query(Mission).filter_by(title=title).first() if title else None)
+        if existing is None:
+            existing = db.query(Mission).filter_by(description=description).first()
+        if existing:
+            existing.title = title
+            existing.description = description
+            existing.difficulty = item.get("difficulty", "EASY")
+            existing.category = item.get("category", "general")
+        else:
+            db.add(Mission(
+                title=title,
+                description=description,
+                difficulty=item.get("difficulty", "EASY"),
+                category=item.get("category", "general"),
+            ))
     db.commit()
 
 
