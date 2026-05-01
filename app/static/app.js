@@ -475,7 +475,8 @@
 
   // SUMMARY
   function showSummary(results) {
-    showView("summary-view");
+    const alreadyVisible = !document.getElementById("summary-view").classList.contains("hidden");
+    if (!alreadyVisible) showView("summary-view");
     clearTimer();
 
     setText("summary-round-label", `Round ${results.round_number}`);
