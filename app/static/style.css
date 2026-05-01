@@ -626,14 +626,15 @@ select {
 .role-card-reveal { animation: cardReveal 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
 
 /* ── Eat evidence dissolve ──────────────────────────────────────── */
+/* filter: blur() skipped — iOS Safari doesn't composite it with transform reliably */
 @keyframes evidenceEat {
-  0%   { transform: scale(1)    rotate(0deg);    filter: blur(0px);  opacity: 1;   }
-  35%  { transform: scale(0.97) rotate(-1.5deg); filter: blur(1px);  opacity: 0.9; }
-  70%  { transform: scale(0.93) rotate(1deg);    filter: blur(3px);  opacity: 0.6; }
-  100% { transform: scale(0.88) rotate(0deg);    filter: blur(8px);  opacity: 0;   }
+  0%   { transform: scale(1)    rotate(0deg)   translateY(0px);  opacity: 1;    }
+  30%  { transform: scale(0.97) rotate(-2deg)  translateY(2px);  opacity: 0.85; }
+  65%  { transform: scale(0.93) rotate(1.5deg) translateY(8px);  opacity: 0.5;  }
+  100% { transform: scale(0.87) rotate(-1deg)  translateY(18px); opacity: 0;    }
 }
 .role-card.evidence-eating {
-  animation: evidenceEat 0.5s ease-in both;
+  animation: evidenceEat 0.4s ease-in both;
   pointer-events: none;
 }
 
