@@ -252,6 +252,7 @@ async def game_page(
             "room": room,
             "player": player,
             "join_code": join_code.upper(),
+            "default_duration_minutes": ROUND_DURATION_MS // 60000,
         },
     )
 

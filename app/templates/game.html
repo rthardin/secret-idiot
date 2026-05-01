@@ -39,16 +39,16 @@
       <div class="duration-row">
         <label class="duration-label" for="lobby-duration-select">Round duration</label>
         <select id="lobby-duration-select" class="duration-select">
-          <option value="5">5 min</option>
-          <option value="10">10 min</option>
-          <option value="15">15 min</option>
-          <option value="20">20 min</option>
-          <option value="30">30 min</option>
-          <option value="45">45 min</option>
-          <option value="60" selected>60 min</option>
-          <option value="90">90 min</option>
-          <option value="120">2 hr</option>
-          <option value="180">3 hr</option>
+          <option value="5" {% if default_duration_minutes == 5 %}selected{% endif %}>5 min</option>
+          <option value="10" {% if default_duration_minutes == 10 %}selected{% endif %}>10 min</option>
+          <option value="15" {% if default_duration_minutes == 15 %}selected{% endif %}>15 min</option>
+          <option value="20" {% if default_duration_minutes == 20 %}selected{% endif %}>20 min</option>
+          <option value="30" {% if default_duration_minutes == 30 %}selected{% endif %}>30 min</option>
+          <option value="45" {% if default_duration_minutes == 45 %}selected{% endif %}>45 min</option>
+          <option value="60" {% if default_duration_minutes == 60 %}selected{% endif %}>60 min</option>
+          <option value="90" {% if default_duration_minutes == 90 %}selected{% endif %}>90 min</option>
+          <option value="120" {% if default_duration_minutes == 120 %}selected{% endif %}>2 hr</option>
+          <option value="180" {% if default_duration_minutes == 180 %}selected{% endif %}>3 hr</option>
         </select>
       </div>
       <button id="start-game-btn" class="btn btn-primary" disabled>Start Game</button>
@@ -192,16 +192,16 @@
       <div class="duration-row">
         <label class="duration-label" for="summary-duration-select">Next round duration</label>
         <select id="summary-duration-select" class="duration-select">
-          <option value="5">5 min</option>
-          <option value="10">10 min</option>
-          <option value="15">15 min</option>
-          <option value="20">20 min</option>
-          <option value="30">30 min</option>
-          <option value="45">45 min</option>
-          <option value="60" selected>60 min</option>
-          <option value="90">90 min</option>
-          <option value="120">2 hr</option>
-          <option value="180">3 hr</option>
+          <option value="5" {% if default_duration_minutes == 5 %}selected{% endif %}>5 min</option>
+          <option value="10" {% if default_duration_minutes == 10 %}selected{% endif %}>10 min</option>
+          <option value="15" {% if default_duration_minutes == 15 %}selected{% endif %}>15 min</option>
+          <option value="20" {% if default_duration_minutes == 20 %}selected{% endif %}>20 min</option>
+          <option value="30" {% if default_duration_minutes == 30 %}selected{% endif %}>30 min</option>
+          <option value="45" {% if default_duration_minutes == 45 %}selected{% endif %}>45 min</option>
+          <option value="60" {% if default_duration_minutes == 60 %}selected{% endif %}>60 min</option>
+          <option value="90" {% if default_duration_minutes == 90 %}selected{% endif %}>90 min</option>
+          <option value="120" {% if default_duration_minutes == 120 %}selected{% endif %}>2 hr</option>
+          <option value="180" {% if default_duration_minutes == 180 %}selected{% endif %}>3 hr</option>
         </select>
       </div>
       <button id="next-round-btn" class="btn btn-primary">Start Next Round</button>
