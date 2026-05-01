@@ -19,7 +19,7 @@
   <div class="card">
     <h2>Join a Game</h2>
     <form onsubmit="event.preventDefault(); var c = document.getElementById('join-code').value.trim().toUpperCase(); if(c) window.location='/join/'+c;">
-      <input id="join-code" type="text" placeholder="Room code" maxlength="6" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase; letter-spacing: 0.15em;">
+      <input id="join-code" type="text" placeholder="Room code" maxlength="6" autocomplete="one-time-code" autocapitalize="characters" style="text-transform:uppercase; letter-spacing: 0.15em;">
       <button type="submit" class="btn btn-secondary">Join Room</button>
     </form>
   </div>
