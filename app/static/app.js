@@ -22,6 +22,7 @@
   let allPlayers = [];   // [{id, name, score, is_host}]
   let lastResults = null;
   let myVote = null;
+  let prevState = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
   function connect() {
@@ -94,11 +95,16 @@
       case "ROUND_SUMMARY":
         myVote = p.has_voted || null;
         if (lastResults) showSummary(lastResults);
+        if (prevState !== "ROUND_SUMMARY" && p.last_duration_minutes) {
+          const el = document.getElementById("summary-duration-select");
+          if (el) el.value = p.last_duration_minutes;
+        }
         break;
       case "GAME_OVER":
         if (p.game_over) onGameOver(p.game_over);
         break;
     }
+    prevState = p.state;
   }
 
   function onRoleAssigned(p) {

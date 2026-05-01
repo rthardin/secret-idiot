@@ -252,6 +252,7 @@ async def game_page(
             "room": room,
             "player": player,
             "join_code": join_code.upper(),
+            "default_duration_minutes": ROUND_DURATION_MS // 60000,
         },
     )
 
@@ -872,6 +873,7 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
 
     if room.current_state == RoomState.ROUND_SUMMARY and rnd and rnd.results_json:
         payload["results"] = rnd.results_json
+        payload["last_duration_minutes"] = (rnd.duration_ms or ROUND_DURATION_MS) // 60000
         vote = db.query(MissionVote).filter_by(round_id=rnd.id, player_id=player_id).first()
         payload["has_voted"] = ("up" if (vote and vote.vote) else "down" if vote else None)
 
