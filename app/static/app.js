@@ -642,8 +642,13 @@
   on("eat-evidence-btn", "click", () => {
     if (confirm("Eat the evidence? Your card will look like a Crowd card for the rest of the round — you won't be able to recover your mission. This can't be undone.")) {
       const card = document.getElementById("role-card");
-      card.classList.add("evidence-eating");
-      setTimeout(() => send("EAT_EVIDENCE", {}), 350);
+      // Double rAF ensures the browser commits a frame after the confirm() dialog
+      // closes before we add the animation class — without this iOS Safari can
+      // drop the animation entirely because rendering was suspended during the dialog.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        card.classList.add("evidence-eating");
+        setTimeout(() => send("EAT_EVIDENCE", {}), 400);
+      }));
     }
   });
 
