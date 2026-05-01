@@ -567,9 +567,13 @@
   function updateTimerDisplay() {
     const el = document.getElementById("timer-display");
     if (!el) return;
-    const m = Math.floor(timeRemainingMs / 60000);
-    const s = Math.floor((timeRemainingMs % 60000) / 1000);
-    el.textContent = `${m}:${String(s).padStart(2, "0")}`;
+    const totalSeconds = Math.floor(timeRemainingMs / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    el.textContent = h > 0
+      ? `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
+      : `${m}:${String(s).padStart(2, "0")}`;
     el.className = "timer";
     if (timeRemainingMs <= 5 * 60 * 1000) el.classList.add("critical");
     else if (timeRemainingMs <= 15 * 60 * 1000) el.classList.add("warning");
