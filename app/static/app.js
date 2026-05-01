@@ -344,18 +344,24 @@
     eatBtn.classList.toggle("hidden", !showEatBtn);
     eatBtn.dataset.role = myRole ? myRole.toLowerCase() : "";
 
+    // Only animate when the round view is visible AND the how-to-play overlay
+    // isn't covering it. ROLE_ASSIGNED can arrive while the lobby is still
+    // showing, which would mark the quote as typed before the player ever
+    // sees it — so we gate on round-view visibility too.
+    const roundViewVisible = !document.getElementById("round-view").classList.contains("hidden");
     const howtoplayVisible = !document.getElementById("howtoplay-overlay").classList.contains("hidden");
+    const shouldAnimate = roundViewVisible && !howtoplayVisible;
 
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
       setText("quote-heading", roundQuote.heading);
       const quoteEl = document.getElementById("quote-text");
-      if (!howtoplayVisible && typedQuoteText !== roundQuote.text) {
+      if (shouldAnimate && typedQuoteText !== roundQuote.text) {
         typedQuoteText = roundQuote.text;
         typewriterEffect(quoteEl, roundQuote.text);
-      } else if (howtoplayVisible) {
-        // Show static text while overlay is up; don't mark as typed so
-        // teletype plays once the player dismisses the overlay.
+      } else if (!shouldAnimate) {
+        // Pre-populate statically but don't mark as typed so the teletype
+        // plays once the view is visible and the overlay is dismissed.
         setFormattedText(quoteEl, roundQuote.text);
       }
       quoteBlock.classList.remove("hidden");
@@ -363,8 +369,8 @@
       quoteBlock.classList.add("hidden");
     }
 
-    // Role card entrance pop — defer until overlay is dismissed
-    if (!howtoplayVisible) {
+    // Role card entrance pop — defer until view is shown and overlay is gone
+    if (shouldAnimate) {
       card.classList.remove("role-card-reveal");
       void card.offsetWidth;
       card.classList.add("role-card-reveal");
