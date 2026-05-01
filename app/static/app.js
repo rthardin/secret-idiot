@@ -94,6 +94,10 @@
       case "ROUND_SUMMARY":
         myVote = p.has_voted || null;
         if (lastResults) showSummary(lastResults);
+        if (p.last_duration_minutes) {
+          const el = document.getElementById("summary-duration-select");
+          if (el) el.value = p.last_duration_minutes;
+        }
         break;
       case "GAME_OVER":
         if (p.game_over) onGameOver(p.game_over);
