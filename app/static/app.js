@@ -358,7 +358,6 @@
     }
 
     // Role card entrance pop
-    const card = document.getElementById("role-card");
     card.classList.remove("role-card-reveal");
     void card.offsetWidth;
     card.classList.add("role-card-reveal");
