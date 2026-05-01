@@ -81,6 +81,7 @@ class Round(Base):
     duration_ms = Column(Integer, default=3600000)
     paused_remaining_ms = Column(Integer, nullable=True)
     results_json = Column(JSON, nullable=True)
+    quote_index = Column(Integer, nullable=True)
 
     room = relationship("Room", back_populates="rounds")
     assignments = relationship("Assignment", back_populates="round")

@@ -15,6 +15,7 @@
   let myMissionTitle = null;
   let myAgentName = null;
   let myAgentMission = null;
+  let roundQuote = null;
   let timerInterval = null;
   let timeRemainingMs = 0;
   let allPlayers = [];   // [{id, name, score, is_host}]
@@ -70,6 +71,7 @@
       myAgentName = p.agent_name || null;
       myAgentMission = p.agent_mission || null;
     }
+    if (p.round_quote) roundQuote = p.round_quote;
 
     if (p.results) lastResults = p.results;
 
@@ -103,6 +105,7 @@
     myMissionTitle = p.mission_title || null;
     myAgentName = p.agent_name || null;
     myAgentMission = p.agent_mission || null;
+    if (p.round_quote) roundQuote = p.round_quote;
     applyRoleCard();
   }
 
@@ -310,6 +313,15 @@
       witnessHint.classList.remove("hidden");
     } else if (myRole === "CROWD") {
       crowdHint.classList.remove("hidden");
+    }
+
+    const quoteBlock = document.getElementById("quote-block");
+    if (roundQuote) {
+      setText("quote-heading", roundQuote.heading);
+      document.getElementById("quote-text").innerHTML = roundQuote.text;
+      quoteBlock.classList.remove("hidden");
+    } else {
+      quoteBlock.classList.add("hidden");
     }
   }
 

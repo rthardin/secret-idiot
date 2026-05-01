@@ -250,6 +250,28 @@ input[type="text"]::placeholder { color: var(--text-dim); }
 
 .role-hint { color: var(--text-dim); font-size: 0.875rem; max-width: 300px; }
 
+.quote-block {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 16px;
+  width: 100%;
+  text-align: left;
+}
+.quote-heading {
+  font-family: monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.quote-text {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-dim);
+  font-style: italic;
+}
+
 /* ── Host controls ─────────────────────────────────────────────── */
 .host-controls { display: flex; flex-direction: column; gap: 8px; }
 

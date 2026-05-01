@@ -6,6 +6,11 @@ from .models import Assignment, DebriefReport, Mission, Player, ReportType, Role
 
 
 MISSIONS_FILE = Path(__file__).parent.parent / "missions.json"
+QUOTES_FILE = Path(__file__).parent.parent / "quotes.json"
+
+
+def load_quotes() -> list:
+    return json.loads(QUOTES_FILE.read_text())
 
 
 def load_missions(db: Session):
