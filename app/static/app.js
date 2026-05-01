@@ -757,13 +757,13 @@
   function launchConfetti() {
     const colors = ["#7c6af7", "#e94560", "#4fc3f7", "#4caf50", "#ff9800", "#fff"];
     const tumbles = ["confettiTumbleA", "confettiTumbleB", "confettiTumbleC", "confettiTumbleD"];
-    for (let i = 0; i < 72; i++) {
+    for (let i = 0; i < 100; i++) {
       const el = document.createElement("div");
       el.className = "confetti-piece";
       const inner = document.createElement("div");
       inner.className = "confetti-inner";
 
-      const size = 5 + Math.random() * 7;
+      const size = 8 + Math.random() * 9;
       const wa = ((Math.random() * 16 + 6) * (Math.random() > 0.5 ? 1 : -1)).toFixed(1);
       const wb = ((Math.random() * 12 + 5) * (Math.random() > 0.5 ? 1 : -1)).toFixed(1);
 
