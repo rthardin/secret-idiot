@@ -23,6 +23,7 @@
   let lastResults = null;
   let myVote = null;
   let prevState = null;
+  let typedQuoteText = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
   function connect() {
@@ -130,6 +131,7 @@
   function onGameOver(p) {
     showView("gameover-view");
     clearTimer();
+    launchConfetti();
 
     // Final leaderboard
     const lb = document.getElementById("gameover-leaderboard");
@@ -191,7 +193,18 @@
     });
     document.getElementById("pause-overlay").classList.add("hidden");
     document.getElementById("howtoplay-overlay").classList.add("hidden");
-    document.getElementById(id).classList.remove("hidden");
+    const el = document.getElementById(id);
+    el.classList.remove("hidden");
+    el.classList.remove("view-entering");
+    void el.offsetWidth; // force reflow to restart animation
+    el.classList.add("view-entering");
+    // Suppress scrollbar for the duration of the entry animation — the
+    // translateY start position and scale overshoot can briefly push content
+    // below the fold and trigger a scrollbar flash on desktop.
+    document.documentElement.style.overflowY = "hidden";
+    el.addEventListener("animationend", () => {
+      document.documentElement.style.overflowY = "";
+    }, { once: true });
   }
 
   const WEBHOOK_STORAGE_KEY = "secretidiot_discord_webhook";
@@ -285,11 +298,11 @@
       startTimer();
     }
 
-    applyRoleCard();
-
     if (roundNumber === 1 && !tutorialSeen) {
       document.getElementById("howtoplay-overlay").classList.remove("hidden");
     }
+
+    applyRoleCard();
   }
 
   function applyRoleCard() {
@@ -338,13 +351,36 @@
     eatBtn.classList.toggle("hidden", !showEatBtn);
     eatBtn.dataset.role = myRole ? myRole.toLowerCase() : "";
 
+    // Only animate when the round view is visible AND the how-to-play overlay
+    // isn't covering it. ROLE_ASSIGNED can arrive while the lobby is still
+    // showing, which would mark the quote as typed before the player ever
+    // sees it — so we gate on round-view visibility too.
+    const roundViewVisible = !document.getElementById("round-view").classList.contains("hidden");
+    const howtoplayVisible = !document.getElementById("howtoplay-overlay").classList.contains("hidden");
+    const shouldAnimate = roundViewVisible && !howtoplayVisible;
+
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
       setText("quote-heading", roundQuote.heading);
-      setFormattedText(document.getElementById("quote-text"), roundQuote.text);
+      const quoteEl = document.getElementById("quote-text");
+      if (shouldAnimate && typedQuoteText !== roundQuote.text) {
+        typedQuoteText = roundQuote.text;
+        typewriterEffect(quoteEl, roundQuote.text);
+      } else if (!shouldAnimate) {
+        // Pre-populate statically but don't mark as typed so the teletype
+        // plays once the view is visible and the overlay is dismissed.
+        setFormattedText(quoteEl, roundQuote.text);
+      }
       quoteBlock.classList.remove("hidden");
     } else {
       quoteBlock.classList.add("hidden");
+    }
+
+    // Role card entrance pop — defer until view is shown and overlay is gone
+    if (shouldAnimate) {
+      card.classList.remove("role-card-reveal");
+      void card.offsetWidth;
+      card.classList.add("role-card-reveal");
     }
   }
 
@@ -439,7 +475,8 @@
 
   // SUMMARY
   function showSummary(results) {
-    showView("summary-view");
+    const alreadyVisible = !document.getElementById("summary-view").classList.contains("hidden");
+    if (!alreadyVisible) showView("summary-view");
     clearTimer();
 
     setText("summary-round-label", `Round ${results.round_number}`);
@@ -516,13 +553,13 @@
 
     const lbCard = document.getElementById("leaderboard-card");
     const roleLabel = { AGENT: "Agent", WITNESS: "Witness" };
-    const deltaRows = (results.score_deltas || []).map((d) => {
+    const deltaRows = (results.score_deltas || []).map((d, i) => {
       const sign = d.delta > 0 ? "+" : "";
       const cls  = d.delta > 0 ? "pos" : d.delta < 0 ? "neg" : "zero";
       const badge = roleLabel[d.role]
         ? `<span class="role-badge-small ${d.role.toLowerCase()}-color">${roleLabel[d.role]}</span>`
         : "";
-      return `<div class="score-row">
+      return `<div class="score-row" style="animation-delay:${i * 70}ms">
         <span>${esc(d.name)}${badge}</span>
         <span><span class="delta ${cls}">${sign}${d.delta}</span><span class="total"> (${d.total} total)</span></span>
       </div>`;
@@ -614,10 +651,18 @@
   on("howtoplay-close-btn", "click", () => {
     tutorialSeen = true;
     document.getElementById("howtoplay-overlay").classList.add("hidden");
+    applyRoleCard(); // now plays card reveal + teletype with overlay gone
   });
   on("eat-evidence-btn", "click", () => {
     if (confirm("Eat the evidence? Your card will look like a Crowd card for the rest of the round — you won't be able to recover your mission. This can't be undone.")) {
-      send("EAT_EVIDENCE", {});
+      const card = document.getElementById("role-card");
+      // Double rAF ensures the browser commits a frame after the confirm() dialog
+      // closes before we add the animation class — without this iOS Safari can
+      // drop the animation entirely because rendering was suspended during the dialog.
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        card.classList.add("evidence-eating");
+        setTimeout(() => send("EAT_EVIDENCE", {}), 500);
+      }));
     }
   });
 
@@ -683,6 +728,49 @@
       } else if (part) {
         top.appendChild(document.createTextNode(part));
       }
+    }
+  }
+
+  function typewriterEffect(el, html, speed) {
+    const delay = speed || 26;
+    const plain = String(html ?? "").replace(/<\/?(?:strong|em)>/g, "");
+    el.textContent = "";
+    const cursor = document.createElement("span");
+    cursor.className = "teletype-cursor";
+    el.appendChild(cursor);
+    let i = 0;
+    function tick() {
+      if (i < plain.length) {
+        el.insertBefore(document.createTextNode(plain[i]), cursor);
+        i++;
+        setTimeout(tick, delay);
+      } else {
+        setTimeout(() => {
+          cursor.remove();
+          setFormattedText(el, html);
+        }, 500);
+      }
+    }
+    tick();
+  }
+
+  function launchConfetti() {
+    const colors = ["#7c6af7", "#e94560", "#4fc3f7", "#4caf50", "#ff9800", "#fff"];
+    for (let i = 0; i < 72; i++) {
+      const el = document.createElement("div");
+      el.className = "confetti-piece";
+      const size = 5 + Math.random() * 7;
+      el.style.cssText = [
+        `left:${Math.random() * 100}vw`,
+        `width:${size}px`,
+        `height:${size}px`,
+        `background:${colors[i % colors.length]}`,
+        `animation-duration:${1.6 + Math.random() * 2}s`,
+        `animation-delay:${Math.random() * 1.8}s`,
+        `border-radius:${Math.random() > 0.5 ? "50%" : "2px"}`,
+      ].join(";");
+      document.body.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
     }
   }
 

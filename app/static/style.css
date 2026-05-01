@@ -22,7 +22,7 @@ html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-size: 16px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -83,7 +83,7 @@ html, body {
 .hint.small { font-size: 0.8rem; }
 .centered-text { text-align: center; }
 
-.monospace { font-family: monospace; font-size: 0.85rem; color: var(--accent); word-break: break-all; }
+.monospace { font-family: 'Space Mono', monospace; font-size: 0.85rem; color: var(--accent); word-break: break-all; }
 
 .error-msg { color: var(--accent2); font-size: 0.9rem; }
 
@@ -99,7 +99,7 @@ html, body {
   letter-spacing: 0.25em;
   text-align: center;
   color: var(--accent);
-  font-family: monospace;
+  font-family: 'Space Mono', monospace;
 }
 
 .divider {
@@ -196,12 +196,16 @@ input[type="text"]::placeholder { color: var(--text-dim); }
   font-weight: 700;
   font-variant-numeric: tabular-nums;
   color: var(--text);
-  font-family: monospace;
+  font-family: 'Space Mono', monospace;
 }
 .timer.warning { color: var(--warning); }
-.timer.critical { color: var(--accent2); animation: pulse 1s infinite; }
+.timer.critical { color: var(--accent2); animation: criticalGlow 0.9s ease-in-out infinite; }
 
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+@keyframes criticalGlow {
+  0%, 100% { opacity: 1;    text-shadow: 0 0 8px  rgba(233,69,96,0.5); }
+  50%       { opacity: 0.6; text-shadow: 0 0 22px rgba(233,69,96,1);   }
+}
 
 /* ── Role card ─────────────────────────────────────────────────── */
 .role-card {
@@ -260,7 +264,7 @@ input[type="text"]::placeholder { color: var(--text-dim); }
   text-align: left;
 }
 .quote-heading {
-  font-family: monospace;
+  font-family: 'Space Mono', monospace;
   font-size: 0.7rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -268,10 +272,11 @@ input[type="text"]::placeholder { color: var(--text-dim); }
   margin-bottom: 8px;
 }
 .quote-text {
-  font-size: 0.9rem;
-  line-height: 1.55;
+  font-size: 0.95rem;
+  line-height: 1.6;
   color: var(--text-dim);
   font-style: italic;
+  font-family: 'Courier Prime', Georgia, serif;
 }
 .quote-text em { font-style: normal; font-weight: 700; }
 
@@ -604,3 +609,97 @@ select {
 }
 .vote-btn:hover { background: var(--surface); border-color: var(--text-dim); }
 .vote-btn.vote-active { border-color: var(--accent); background: var(--surface); }
+
+/* ── View transitions ───────────────────────────────────────────── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+.view-entering { animation: fadeSlideUp 0.22s ease-out both; }
+
+/* ── Role card reveal ───────────────────────────────────────────── */
+@keyframes cardReveal {
+  0%   { opacity: 0; transform: scale(0.91); }
+  65%  { opacity: 1; transform: scale(1.02); }
+  100% { opacity: 1; transform: scale(1);    }
+}
+.role-card-reveal { animation: cardReveal 0.38s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* ── Eat evidence dissolve ──────────────────────────────────────── */
+@keyframes evidenceEat {
+  0%   { transform: scale(1)    rotate(0deg)    translateY(0px);  filter: blur(0px);  opacity: 1;    }
+  15%  { transform: scale(1.02) rotate(-4deg)   translateY(0px);  filter: blur(1px);  opacity: 1;    }
+  35%  { transform: scale(0.97) rotate(5deg)    translateY(5px);  filter: blur(2px);  opacity: 0.8;  }
+  55%  { transform: scale(0.93) rotate(-4deg)   translateY(12px); filter: blur(4px);  opacity: 0.55; }
+  75%  { transform: scale(0.89) rotate(2.5deg)  translateY(20px); filter: blur(8px);  opacity: 0.25; }
+  100% { transform: scale(0.82) rotate(-2deg)   translateY(32px); filter: blur(10px); opacity: 0;    }
+}
+.role-card.evidence-eating {
+  animation: evidenceEat 0.65s ease-in both;
+  pointer-events: none;
+}
+
+/* ── Reconnecting spinner ───────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--surface2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  margin: 0 auto 12px;
+}
+
+/* ── Player online-dot pulse ────────────────────────────────────── */
+@keyframes dotPulse {
+  0%, 100% { opacity: 1;   transform: scale(1);    }
+  50%       { opacity: 0.4; transform: scale(0.7);  }
+}
+.player-list li .dot { animation: dotPulse 2.8s ease-in-out infinite; }
+.player-list li:nth-child(2) .dot { animation-delay: 0.45s; }
+.player-list li:nth-child(3) .dot { animation-delay: 0.9s;  }
+.player-list li:nth-child(4) .dot { animation-delay: 1.35s; }
+.player-list li:nth-child(5) .dot { animation-delay: 1.8s;  }
+.player-list li:nth-child(6) .dot { animation-delay: 2.25s; }
+.player-list li:nth-child(7) .dot { animation-delay: 2.7s;  }
+.player-list li:nth-child(8) .dot { animation-delay: 3.15s; }
+
+/* ── Outcome chip pop ───────────────────────────────────────────── */
+@keyframes chipPop {
+  from { opacity: 0; transform: scale(0.55); }
+  to   { opacity: 1; transform: scale(1);    }
+}
+.outcome-chip { animation: chipPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* ── Score-row staggered reveal ─────────────────────────────────── */
+@keyframes deltaReveal {
+  from { opacity: 0; transform: translateX(-10px); }
+  to   { opacity: 1; transform: translateX(0);     }
+}
+.score-row { animation: deltaReveal 0.2s ease-out both; }
+
+/* ── Confetti pieces ────────────────────────────────────────────── */
+@keyframes confettiFall {
+  from { transform: translateY(-16px) rotate(0deg);    opacity: 1; }
+  to   { transform: translateY(105vh) rotate(720deg);  opacity: 0; }
+}
+.confetti-piece {
+  position: fixed;
+  top: -16px;
+  pointer-events: none;
+  z-index: 999;
+  border-radius: 2px;
+  animation: confettiFall linear both;
+}
+
+/* ── Teletype cursor ────────────────────────────────────────────── */
+@keyframes blink { 50% { opacity: 0; } }
+.teletype-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 0.85em;
+  background: var(--text-dim);
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  animation: blink 0.65s step-end infinite;
+}
