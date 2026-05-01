@@ -96,6 +96,7 @@ class Assignment(Base):
     player_id = Column(String, ForeignKey("players.id"), nullable=False)
     role = Column(Enum(Role), nullable=False)
     mission_id = Column(String, ForeignKey("missions.id"), nullable=True)
+    evidence_eaten = Column(Boolean, default=False)
 
     round = relationship("Round", back_populates="assignments")
     player = relationship("Player", back_populates="assignments", foreign_keys=[player_id])
