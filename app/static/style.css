@@ -273,6 +273,22 @@ input[type="text"]::placeholder { color: var(--text-dim); }
 }
 .quote-text em { font-style: normal; }
 
+/* ── Eat the evidence button ───────────────────────────────────── */
+.eat-evidence-btn {
+  background: none;
+  border: none;
+  color: var(--text-dim);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 6px;
+  opacity: 0.4;
+  transition: opacity 0.2s, color 0.2s;
+  margin-top: auto;
+}
+.eat-evidence-btn:hover { opacity: 1; color: var(--accent2); }
+
 /* ── Host controls ─────────────────────────────────────────────── */
 .host-controls { display: flex; flex-direction: column; gap: 8px; }
 

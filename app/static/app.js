@@ -15,6 +15,7 @@
   let myMissionTitle = null;
   let myAgentName = null;
   let myAgentMission = null;
+  let evidenceEaten = false;
   let roundQuote = null;
   let timerInterval = null;
   let timeRemainingMs = 0;
@@ -70,6 +71,7 @@
       myMissionTitle = p.your_mission_title || null;
       myAgentName = p.agent_name || null;
       myAgentMission = p.agent_mission || null;
+      evidenceEaten = p.evidence_eaten || false;
     }
     if (p.round_quote) roundQuote = p.round_quote;
 
@@ -105,6 +107,7 @@
     myMissionTitle = p.mission_title || null;
     myAgentName = p.agent_name || null;
     myAgentMission = p.agent_mission || null;
+    evidenceEaten = p.evidence_eaten || false;
     if (p.round_quote) roundQuote = p.round_quote;
     applyRoleCard();
   }
@@ -285,35 +288,45 @@
 
   function applyRoleCard() {
     if (!myRole) return;
-    const card = document.getElementById("role-card");
-    card.className = `role-card ${myRole.toLowerCase()}`;
 
-    setText("role-badge", myRole);
+    const displayRole = evidenceEaten ? "CROWD" : myRole;
+    const card = document.getElementById("role-card");
+    card.className = `role-card ${displayRole.toLowerCase()}`;
+
+    setText("role-badge", displayRole);
 
     const missionBlock  = document.getElementById("mission-block");
     const witnessBlock  = document.getElementById("witness-block");
     const witnessHint   = document.getElementById("witness-hint");
     const crowdHint     = document.getElementById("crowd-hint");
+    const eatBtn        = document.getElementById("eat-evidence-btn");
 
     missionBlock.classList.add("hidden");
     witnessBlock.classList.add("hidden");
     witnessHint.classList.add("hidden");
     crowdHint.classList.add("hidden");
 
-    if (myRole === "AGENT" && myMission) {
-      setText("mission-title", myMissionTitle || "");
-      setText("mission-text", myMission);
-      missionBlock.classList.remove("hidden");
-    } else if (myRole === "WITNESS") {
-      if (myAgentName) {
-        setText("witness-agent-name", myAgentName);
-        setText("witness-agent-mission", myAgentMission || "Unknown");
-        witnessBlock.classList.remove("hidden");
+    if (!evidenceEaten) {
+      if (myRole === "AGENT" && myMission) {
+        setText("mission-title", myMissionTitle || "");
+        setText("mission-text", myMission);
+        missionBlock.classList.remove("hidden");
+      } else if (myRole === "WITNESS") {
+        if (myAgentName) {
+          setText("witness-agent-name", myAgentName);
+          setText("witness-agent-mission", myAgentMission || "Unknown");
+          witnessBlock.classList.remove("hidden");
+        }
+        witnessHint.classList.remove("hidden");
+      } else if (myRole === "CROWD") {
+        crowdHint.classList.remove("hidden");
       }
-      witnessHint.classList.remove("hidden");
-    } else if (myRole === "CROWD") {
+    } else {
       crowdHint.classList.remove("hidden");
     }
+
+    const showEatBtn = !evidenceEaten && (myRole === "AGENT" || myRole === "WITNESS");
+    eatBtn.classList.toggle("hidden", !showEatBtn);
 
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
@@ -588,6 +601,12 @@
     tutorialSeen = true;
     document.getElementById("howtoplay-overlay").classList.add("hidden");
   });
+  on("eat-evidence-btn", "click", () => {
+    if (confirm("Eat the evidence? Your card will look like a Crowd card for the rest of the round — you won't be able to recover your mission. This can't be undone.")) {
+      send("EAT_EVIDENCE", {});
+    }
+  });
+
   on("abandon-round-btn", "click", () => {
     if (confirm("Abandon this round and retry with newly assigned roles? No points will be awarded.")) {
       send("ABANDON_ROUND");

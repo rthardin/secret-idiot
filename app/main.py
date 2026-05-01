@@ -150,6 +150,9 @@ def _migrate_db():
             conn.execute(text("ALTER TABLE debrief_reports ADD COLUMN vetoed BOOLEAN DEFAULT 0"))
         if "quote_index" not in round_cols:
             conn.execute(text("ALTER TABLE rounds ADD COLUMN quote_index INTEGER"))
+        assignment_cols = [c["name"] for c in inspector.get_columns("assignments")]
+        if "evidence_eaten" not in assignment_cols:
+            conn.execute(text("ALTER TABLE assignments ADD COLUMN evidence_eaten BOOLEAN DEFAULT 0"))
         conn.commit()
 
 
@@ -381,7 +384,7 @@ async def _start_round(room: Room, db: Session, duration_ms: int = None):
     for asgn in assignments:
         mission_text = asgn.mission.description if asgn.mission else None
         mission_title = asgn.mission.title if asgn.mission else None
-        payload = {"role": asgn.role.value, "mission_text": mission_text, "mission_title": mission_title}
+        payload = {"role": asgn.role.value, "mission_text": mission_text, "mission_title": mission_title, "evidence_eaten": False}
         if asgn.role == Role.WITNESS and agent_asgn:
             payload["agent_name"] = agent_asgn.player.name
             payload["agent_mission"] = agent_asgn.mission.description if agent_asgn.mission else None
@@ -772,8 +775,26 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         db.commit()
         await manager.send(room.id, player.id, {"event": "VOTE_RECORDED", "payload": {"vote": vote_value}})
 
+    elif action == "EAT_EVIDENCE":
+        if room.current_state not in (RoomState.ROUND_ACTIVE, RoomState.PAUSED):
+            return
+        rnd = (
+            db.query(Round)
+            .filter_by(room_id=room.id)
+            .order_by(Round.round_number.desc())
+            .first()
+        )
+        if not rnd:
+            return
+        asgn = db.query(Assignment).filter_by(round_id=rnd.id, player_id=player.id).first()
+        if not asgn or asgn.role not in (Role.AGENT, Role.WITNESS) or asgn.evidence_eaten:
+            return
+        asgn.evidence_eaten = True
+        db.commit()
+        await _send_state_sync(room.id, player.id, db)
+
     elif action == "REQUEST_SYNC":
-        await _send_state_sync(room_id, player_id, db)
+        await _send_state_sync(room.id, player.id, db)
 
 
 # ---------------------------------------------------------------------------
@@ -833,6 +854,7 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
                 payload["your_mission_title"] = (
                     asgn.mission.title if asgn.mission else None
                 )
+                payload["evidence_eaten"] = bool(asgn.evidence_eaten)
                 if asgn.role == Role.WITNESS:
                     agent_asgn = db.query(Assignment).filter_by(
                         round_id=rnd.id, role=Role.AGENT
