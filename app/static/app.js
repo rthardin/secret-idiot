@@ -291,11 +291,11 @@
       startTimer();
     }
 
-    applyRoleCard();
-
     if (roundNumber === 1 && !tutorialSeen) {
       document.getElementById("howtoplay-overlay").classList.remove("hidden");
     }
+
+    applyRoleCard();
   }
 
   function applyRoleCard() {
