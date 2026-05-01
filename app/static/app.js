@@ -756,19 +756,37 @@
 
   function launchConfetti() {
     const colors = ["#7c6af7", "#e94560", "#4fc3f7", "#4caf50", "#ff9800", "#fff"];
+    const tumbles = ["confettiTumbleA", "confettiTumbleB", "confettiTumbleC", "confettiTumbleD"];
     for (let i = 0; i < 72; i++) {
       const el = document.createElement("div");
       el.className = "confetti-piece";
+      const inner = document.createElement("div");
+      inner.className = "confetti-inner";
+
       const size = 5 + Math.random() * 7;
+      const wa = ((Math.random() * 16 + 6) * (Math.random() > 0.5 ? 1 : -1)).toFixed(1);
+      const wb = ((Math.random() * 12 + 5) * (Math.random() > 0.5 ? 1 : -1)).toFixed(1);
+
       el.style.cssText = [
         `left:${Math.random() * 100}vw`,
         `width:${size}px`,
         `height:${size}px`,
-        `background:${colors[i % colors.length]}`,
+        `--wa:${wa}px`,
+        `--wb:${wb}px`,
         `animation-duration:${1.6 + Math.random() * 2}s`,
         `animation-delay:${Math.random() * 1.8}s`,
-        `border-radius:${Math.random() > 0.5 ? "50%" : "2px"}`,
       ].join(";");
+
+      inner.style.cssText = [
+        `width:100%`,
+        `height:100%`,
+        `background:${colors[i % colors.length]}`,
+        `border-radius:${Math.random() > 0.5 ? "50%" : "2px"}`,
+        `animation-name:${tumbles[i % tumbles.length]}`,
+        `animation-duration:${(0.35 + Math.random() * 0.55).toFixed(2)}s`,
+      ].join(";");
+
+      el.appendChild(inner);
       document.body.appendChild(el);
       el.addEventListener("animationend", () => el.remove());
     }
