@@ -23,6 +23,7 @@
   let lastResults = null;
   let myVote = null;
   let prevState = null;
+  let typedQuoteText = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
   function connect() {
@@ -130,6 +131,7 @@
   function onGameOver(p) {
     showView("gameover-view");
     clearTimer();
+    launchConfetti();
 
     // Final leaderboard
     const lb = document.getElementById("gameover-leaderboard");
@@ -191,7 +193,11 @@
     });
     document.getElementById("pause-overlay").classList.add("hidden");
     document.getElementById("howtoplay-overlay").classList.add("hidden");
-    document.getElementById(id).classList.remove("hidden");
+    const el = document.getElementById(id);
+    el.classList.remove("hidden");
+    el.classList.remove("view-entering");
+    void el.offsetWidth; // force reflow to restart animation
+    el.classList.add("view-entering");
   }
 
   const WEBHOOK_STORAGE_KEY = "secretidiot_discord_webhook";
@@ -341,11 +347,21 @@
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
       setText("quote-heading", roundQuote.heading);
-      setFormattedText(document.getElementById("quote-text"), roundQuote.text);
+      const quoteEl = document.getElementById("quote-text");
+      if (typedQuoteText !== roundQuote.text) {
+        typedQuoteText = roundQuote.text;
+        typewriterEffect(quoteEl, roundQuote.text);
+      }
       quoteBlock.classList.remove("hidden");
     } else {
       quoteBlock.classList.add("hidden");
     }
+
+    // Role card entrance pop
+    const card = document.getElementById("role-card");
+    card.classList.remove("role-card-reveal");
+    void card.offsetWidth;
+    card.classList.add("role-card-reveal");
   }
 
   // DEBRIEF
@@ -516,13 +532,13 @@
 
     const lbCard = document.getElementById("leaderboard-card");
     const roleLabel = { AGENT: "Agent", WITNESS: "Witness" };
-    const deltaRows = (results.score_deltas || []).map((d) => {
+    const deltaRows = (results.score_deltas || []).map((d, i) => {
       const sign = d.delta > 0 ? "+" : "";
       const cls  = d.delta > 0 ? "pos" : d.delta < 0 ? "neg" : "zero";
       const badge = roleLabel[d.role]
         ? `<span class="role-badge-small ${d.role.toLowerCase()}-color">${roleLabel[d.role]}</span>`
         : "";
-      return `<div class="score-row">
+      return `<div class="score-row" style="animation-delay:${i * 70}ms">
         <span>${esc(d.name)}${badge}</span>
         <span><span class="delta ${cls}">${sign}${d.delta}</span><span class="total"> (${d.total} total)</span></span>
       </div>`;
@@ -617,7 +633,9 @@
   });
   on("eat-evidence-btn", "click", () => {
     if (confirm("Eat the evidence? Your card will look like a Crowd card for the rest of the round — you won't be able to recover your mission. This can't be undone.")) {
-      send("EAT_EVIDENCE", {});
+      const card = document.getElementById("role-card");
+      card.classList.add("evidence-eating");
+      setTimeout(() => send("EAT_EVIDENCE", {}), 350);
     }
   });
 
@@ -683,6 +701,49 @@
       } else if (part) {
         top.appendChild(document.createTextNode(part));
       }
+    }
+  }
+
+  function typewriterEffect(el, html, speed) {
+    const delay = speed || 26;
+    const plain = String(html ?? "").replace(/<\/?(?:strong|em)>/g, "");
+    el.textContent = "";
+    const cursor = document.createElement("span");
+    cursor.className = "teletype-cursor";
+    el.appendChild(cursor);
+    let i = 0;
+    function tick() {
+      if (i < plain.length) {
+        el.insertBefore(document.createTextNode(plain[i]), cursor);
+        i++;
+        setTimeout(tick, delay);
+      } else {
+        setTimeout(() => {
+          cursor.remove();
+          setFormattedText(el, html);
+        }, 500);
+      }
+    }
+    tick();
+  }
+
+  function launchConfetti() {
+    const colors = ["#7c6af7", "#e94560", "#4fc3f7", "#4caf50", "#ff9800", "#fff"];
+    for (let i = 0; i < 72; i++) {
+      const el = document.createElement("div");
+      el.className = "confetti-piece";
+      const size = 5 + Math.random() * 7;
+      el.style.cssText = [
+        `left:${Math.random() * 100}vw`,
+        `width:${size}px`,
+        `height:${size}px`,
+        `background:${colors[i % colors.length]}`,
+        `animation-duration:${1.6 + Math.random() * 2}s`,
+        `animation-delay:${Math.random() * 1.8}s`,
+        `border-radius:${Math.random() > 0.5 ? "50%" : "2px"}`,
+      ].join(";");
+      document.body.appendChild(el);
+      el.addEventListener("animationend", () => el.remove());
     }
   }
 
