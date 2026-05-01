@@ -15,7 +15,7 @@ from sqlalchemy.orm import Session
 
 from sqlalchemy import inspect, text
 from .database import Base, DATABASE_URL, SessionLocal, engine, get_db
-from .game import assign_roles, calculate_scores, load_missions
+from .game import assign_roles, calculate_scores, load_missions, load_quotes
 from .models import (
     Assignment,
     DebriefReport,
@@ -41,6 +41,7 @@ templates = Jinja2Templates(directory="app/templates")
 manager = ConnectionManager()
 # {room_id: asyncio.Task}
 round_timers = {}  # {room_id: asyncio.Task}
+_quotes: list = []
 
 
 # ---------------------------------------------------------------------------
@@ -56,6 +57,7 @@ async def startup():
         load_missions(db)
     finally:
         db.close()
+    _quotes[:] = load_quotes()
     asyncio.create_task(_cleanup_worker())
 
 
@@ -120,6 +122,8 @@ def _migrate_db():
         report_cols = [c["name"] for c in inspector.get_columns("debrief_reports")]
         if "vetoed" not in report_cols:
             conn.execute(text("ALTER TABLE debrief_reports ADD COLUMN vetoed BOOLEAN DEFAULT 0"))
+        if "quote_index" not in round_cols:
+            conn.execute(text("ALTER TABLE rounds ADD COLUMN quote_index INTEGER"))
         conn.commit()
 
 
@@ -327,6 +331,8 @@ async def _start_round(room: Room, db: Session, duration_ms: int = None):
 
     round_number = db.query(Round).filter_by(room_id=room.id).count() + 1
     rnd = Round(room_id=room.id, round_number=round_number, duration_ms=duration_ms)
+    if _quotes:
+        rnd.quote_index = random.randrange(len(_quotes))
     db.add(rnd)
     db.flush()
 
@@ -340,6 +346,11 @@ async def _start_round(room: Room, db: Session, duration_ms: int = None):
     # Build a lookup so witness can be told the agent's identity
     agent_asgn = next((a for a in assignments if a.role == Role.AGENT), None)
 
+    round_quote = None
+    if _quotes and rnd.quote_index is not None and rnd.quote_index < len(_quotes):
+        q = _quotes[rnd.quote_index]
+        round_quote = {"heading": q["heading"], "text": q["body"]}
+
     # Send each player their role individually before the general broadcast
     for asgn in assignments:
         mission_text = asgn.mission.description if asgn.mission else None
@@ -348,6 +359,8 @@ async def _start_round(room: Room, db: Session, duration_ms: int = None):
         if asgn.role == Role.WITNESS and agent_asgn:
             payload["agent_name"] = agent_asgn.player.name
             payload["agent_mission"] = agent_asgn.mission.description if agent_asgn.mission else None
+        if round_quote:
+            payload["round_quote"] = round_quote
         await manager.send(room.id, asgn.player_id, {"event": "ROLE_ASSIGNED", "payload": payload})
 
     await _broadcast_state(room.id, db)
@@ -773,6 +786,9 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
     if room.current_state in (RoomState.ROUND_ACTIVE, RoomState.PAUSED, RoomState.DEBRIEF_PENDING):
         if rnd:
             payload["round_number"] = rnd.round_number
+            if _quotes and rnd.quote_index is not None and rnd.quote_index < len(_quotes):
+                q = _quotes[rnd.quote_index]
+                payload["round_quote"] = {"heading": q["heading"], "text": q["body"]}
             if room.current_state == RoomState.PAUSED:
                 payload["time_remaining_ms"] = rnd.paused_remaining_ms or 0
             elif room.current_state == RoomState.ROUND_ACTIVE and rnd.start_time:
