@@ -318,7 +318,7 @@
     const quoteBlock = document.getElementById("quote-block");
     if (roundQuote) {
       setText("quote-heading", roundQuote.heading);
-      document.getElementById("quote-text").innerHTML = roundQuote.text;
+      setFormattedText(document.getElementById("quote-text"), roundQuote.text);
       quoteBlock.classList.remove("hidden");
     } else {
       quoteBlock.classList.add("hidden");
@@ -631,6 +631,26 @@
   function on(id, event, handler) {
     const el = document.getElementById(id);
     if (el) el.addEventListener(event, handler);
+  }
+
+  // Renders a string that may contain <strong> and <em> tags into `el`
+  // without using innerHTML. All other content is treated as plain text.
+  function setFormattedText(el, html) {
+    el.textContent = "";
+    const parts = String(html ?? "").split(/(<\/?(?:strong|em)>)/);
+    const stack = [el];
+    for (const part of parts) {
+      const top = stack[stack.length - 1];
+      if (part === "<strong>" || part === "<em>") {
+        const node = document.createElement(part.slice(1, -1));
+        top.appendChild(node);
+        stack.push(node);
+      } else if (part === "</strong>" || part === "</em>") {
+        if (stack.length > 1) stack.pop();
+      } else if (part) {
+        top.appendChild(document.createTextNode(part));
+      }
+    }
   }
 
   function esc(str) {
