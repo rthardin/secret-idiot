@@ -390,6 +390,7 @@ select {
   background: var(--bg);
   color: var(--text);
   font-size: 0.95rem;
+  font-family: inherit;
   outline: none;
 }
 
@@ -517,6 +518,7 @@ select {
   border-radius: 8px;
   padding: 6px 10px;
   font-size: 0.9rem;
+  font-family: inherit;
   outline: none;
 }
 
