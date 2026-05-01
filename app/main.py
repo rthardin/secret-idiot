@@ -59,6 +59,32 @@ async def startup():
         db.close()
     _quotes[:] = load_quotes()
     asyncio.create_task(_cleanup_worker())
+    asyncio.create_task(_restore_timers())
+
+
+async def _restore_timers():
+    db = SessionLocal()
+    try:
+        active_rooms = db.query(Room).filter_by(current_state=RoomState.ROUND_ACTIVE).all()
+        for room in active_rooms:
+            rnd = (
+                db.query(Round)
+                .filter_by(room_id=room.id)
+                .order_by(Round.round_number.desc())
+                .first()
+            )
+            if not rnd or not rnd.start_time:
+                continue
+            elapsed_ms = (datetime.utcnow() - rnd.start_time).total_seconds() * 1000
+            round_dur = rnd.duration_ms or ROUND_DURATION_MS
+            remaining_ms = round_dur - int(elapsed_ms)
+            if remaining_ms <= 0:
+                await _transition_to_debrief(room.id, db)
+            else:
+                task = asyncio.create_task(_round_timer(room.id, remaining_ms))
+                round_timers[room.id] = task
+    finally:
+        db.close()
 
 
 async def _cleanup_worker():
