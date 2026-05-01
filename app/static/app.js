@@ -198,6 +198,13 @@
     el.classList.remove("view-entering");
     void el.offsetWidth; // force reflow to restart animation
     el.classList.add("view-entering");
+    // Suppress scrollbar for the duration of the entry animation — the
+    // translateY start position and scale overshoot can briefly push content
+    // below the fold and trigger a scrollbar flash on desktop.
+    document.documentElement.style.overflowY = "hidden";
+    el.addEventListener("animationend", () => {
+      document.documentElement.style.overflowY = "";
+    }, { once: true });
   }
 
   const WEBHOOK_STORAGE_KEY = "secretidiot_discord_webhook";
