@@ -432,7 +432,9 @@ select {
 .outcome-PERFECT_CRIME    { background: rgba(76,175,80,0.2); color: var(--success); }
 .outcome-HONORABLE_EFFORT { background: rgba(124,106,247,0.2); color: var(--accent); }
 .outcome-MISSION_FAILED   { background: rgba(233,69,96,0.15); color: var(--accent2); }
-.outcome-SICK_BURN        { background: rgba(255,152,0,0.2); color: var(--warning); }
+.outcome-SICK_BURN        { background: rgba(255,152,0,0.2); color: var(--warning);
+  animation: chipPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both,
+             sickBurnFire 2.2s 0.3s ease-out both; }
 .outcome-FALSE_ACCUSATION { background: rgba(233,69,96,0.15); color: var(--accent2); }
 
 .score-row {
@@ -673,6 +675,18 @@ select {
   to   { opacity: 1; transform: scale(1);    }
 }
 .outcome-chip { animation: chipPop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+
+/* ── Sick Burn fire effect (fades out after ~2s) ────────────────── */
+@keyframes sickBurnFire {
+  0%   { box-shadow: none; }
+  8%   { box-shadow: 0 0 10px 3px rgba(255,80,0,0.85), 0 0 22px 8px rgba(255,40,0,0.45);  color: #ff4400; background: rgba(255,90,0,0.35); }
+  22%  { box-shadow: 0 0 14px 5px rgba(255,210,0,0.75), 0 0 28px 12px rgba(255,130,0,0.38); color: #ffcc00; background: rgba(255,180,0,0.3); }
+  38%  { box-shadow: 0 0 8px 2px rgba(255,40,0,0.85), 0 0 18px 6px rgba(200,10,0,0.45);   color: #ff3300; background: rgba(255,70,0,0.3); }
+  52%  { box-shadow: 0 0 11px 4px rgba(255,170,0,0.65), 0 0 24px 9px rgba(255,90,0,0.32); color: #ffaa00; background: rgba(255,150,0,0.25); }
+  70%  { box-shadow: 0 0 5px 1px rgba(255,120,0,0.5), 0 0 12px 4px rgba(255,80,0,0.22);   color: #ff8800; background: rgba(255,130,0,0.22); }
+  88%  { box-shadow: 0 0 2px 0px rgba(255,152,0,0.25); color: var(--warning); background: rgba(255,152,0,0.2); }
+  100% { box-shadow: none; color: var(--warning); background: rgba(255,152,0,0.2); }
+}
 
 /* ── Score-row staggered reveal ─────────────────────────────────── */
 @keyframes deltaReveal {
