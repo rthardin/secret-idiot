@@ -385,7 +385,9 @@ async def _start_round(room: Room, db: Session, duration_ms: int = None):
     for asgn in assignments:
         mission_text = asgn.mission.description if asgn.mission else None
         mission_title = asgn.mission.title if asgn.mission else None
-        payload = {"role": asgn.role.value, "mission_text": mission_text, "mission_title": mission_title, "evidence_eaten": False}
+        mission_difficulty = asgn.mission.difficulty if asgn.mission else None
+        mission_category = asgn.mission.category if asgn.mission else None
+        payload = {"role": asgn.role.value, "mission_text": mission_text, "mission_title": mission_title, "mission_difficulty": mission_difficulty, "mission_category": mission_category, "evidence_eaten": False}
         if asgn.role == Role.WITNESS and agent_asgn:
             payload["agent_name"] = agent_asgn.player.name
             payload["agent_mission"] = agent_asgn.mission.description if agent_asgn.mission else None
@@ -855,6 +857,12 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
                 )
                 payload["your_mission_title"] = (
                     asgn.mission.title if asgn.mission else None
+                )
+                payload["your_mission_difficulty"] = (
+                    asgn.mission.difficulty if asgn.mission else None
+                )
+                payload["your_mission_category"] = (
+                    asgn.mission.category if asgn.mission else None
                 )
                 payload["evidence_eaten"] = bool(asgn.evidence_eaten)
                 if asgn.role == Role.WITNESS:
