@@ -683,16 +683,42 @@ select {
 
 /* ── Confetti pieces ────────────────────────────────────────────── */
 @keyframes confettiFall {
-  from { transform: translateY(-16px) rotate(0deg);    opacity: 1; }
-  to   { transform: translateY(105vh) rotate(720deg);  opacity: 0; }
+  0%   { transform: translateY(-16px) translateX(0);                         opacity: 1; }
+  20%  { transform: translateY(20vh)  translateX(var(--wa, 12px));  }
+  40%  { transform: translateY(40vh)  translateX(var(--wb, -9px));  }
+  60%  { transform: translateY(60vh)  translateX(var(--wa, 12px));  }
+  80%  { transform: translateY(80vh)  translateX(var(--wb, -9px));  }
+  100% { transform: translateY(105vh) translateX(0);                         opacity: 0; }
+}
+@keyframes confettiTumbleA {
+  from { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg);   }
+  to   { transform: rotateX(360deg) rotateY(720deg) rotateZ(180deg); }
+}
+@keyframes confettiTumbleB {
+  from { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg);    }
+  to   { transform: rotateX(720deg) rotateY(360deg) rotateZ(-180deg); }
+}
+@keyframes confettiTumbleC {
+  from { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg);  }
+  to   { transform: rotateX(180deg) rotateY(540deg) rotateZ(90deg); }
+}
+@keyframes confettiTumbleD {
+  from { transform: rotateX(0deg)   rotateY(0deg)   rotateZ(0deg);    }
+  to   { transform: rotateX(540deg) rotateY(180deg) rotateZ(-90deg); }
 }
 .confetti-piece {
   position: fixed;
   top: -16px;
   pointer-events: none;
   z-index: 999;
-  border-radius: 2px;
+  perspective: 300px;
   animation: confettiFall linear both;
+}
+.confetti-inner {
+  width: 100%;
+  height: 100%;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
 
 /* ── Teletype cursor ────────────────────────────────────────────── */
