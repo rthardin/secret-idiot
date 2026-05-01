@@ -633,7 +633,7 @@ select {
   100% { transform: scale(0.88) rotate(0deg);    filter: blur(8px);  opacity: 0;   }
 }
 .role-card.evidence-eating {
-  animation: evidenceEat 0.38s ease-in both;
+  animation: evidenceEat 0.5s ease-in both;
   pointer-events: none;
 }
 
