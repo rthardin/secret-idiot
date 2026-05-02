@@ -58,8 +58,9 @@
       case "PLAYER_JOINED":     /* handled via full state sync */ break;
       case "ROUND_RESULTS":     onRoundResults(msg.payload); break;
       case "VOTE_RECORDED":     onVoteRecorded(msg.payload); break;
-      case "DEBRIEF_SUBMITTED": onDebriefSubmitted(msg.payload); break;
-      case "GAME_OVER":         onGameOver(msg.payload);     break;
+      case "DEBRIEF_SUBMITTED":    onDebriefSubmitted(msg.payload);    break;
+      case "CONNECTIONS_CHANGED":  onConnectionsChanged(msg.payload);  break;
+      case "GAME_OVER":            onGameOver(msg.payload);             break;
       case "ERROR":             alert(msg.payload.message);  break;
     }
   }
@@ -131,6 +132,11 @@
     if (p.submitted_player_ids) debriefSubmittedIds = new Set(p.submitted_player_ids);
     if (p.connected_player_ids) debriefConnectedIds = new Set(p.connected_player_ids);
     updateDebriefProgress(p.submitted_count, p.total_count);
+  }
+
+  function onConnectionsChanged(p) {
+    debriefConnectedIds = new Set(p.connected_player_ids);
+    renderDebriefVoterList();
   }
 
   function onGameOver(p) {

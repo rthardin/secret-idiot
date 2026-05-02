@@ -308,6 +308,11 @@ async def websocket_endpoint(
         await manager.connect(websocket, room.id, player_id)
 
         await _send_state_sync(room.id, player_id, db)
+        await manager.broadcast(
+            room.id,
+            {"event": "CONNECTIONS_CHANGED", "payload": {"connected_player_ids": list(manager.connected_player_ids(room.id))}},
+            exclude=player_id,
+        )
 
         try:
             while True:
@@ -322,6 +327,11 @@ async def websocket_endpoint(
             pass
     finally:
         manager.disconnect(room.id if room else "", player_id)
+        if room:
+            await manager.broadcast(
+                room.id,
+                {"event": "CONNECTIONS_CHANGED", "payload": {"connected_player_ids": list(manager.connected_player_ids(room.id))}},
+            )
         db.close()
 
 
