@@ -23,6 +23,8 @@
   let lastResults = null;
   let myVote = null;
   let prevState = null;
+  let debriefSubmittedIds = new Set();
+  let debriefConnectedIds = new Set();
   let typedQuoteText = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
@@ -91,7 +93,8 @@
         break;
       case "DEBRIEF_PENDING":
         showDebrief(p.round_number, p.submitted_count, p.total_count,
-                    p.your_role, p.your_mission, p.agent_name, p.agent_mission);
+                    p.your_role, p.your_mission, p.agent_name, p.agent_mission,
+                    p.submitted_player_ids, p.connected_player_ids);
         break;
       case "ROUND_SUMMARY":
         myVote = p.has_voted || null;
@@ -125,6 +128,8 @@
   }
 
   function onDebriefSubmitted(p) {
+    if (p.submitted_player_ids) debriefSubmittedIds = new Set(p.submitted_player_ids);
+    if (p.connected_player_ids) debriefConnectedIds = new Set(p.connected_player_ids);
     updateDebriefProgress(p.submitted_count, p.total_count);
   }
 
@@ -396,10 +401,12 @@
   // DEBRIEF
   // role/mission params passed directly from the state sync payload so the
   // form is always built with fresh data even on reconnect.
-  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission) {
+  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission, submittedPlayerIds, connectedPlayerIds) {
     // Update globals if fresh data arrived
     if (role) { myRole = role; myMission = mission || null; }
     if (agentName) { myAgentName = agentName; myAgentMission = agentMission || null; }
+    if (submittedPlayerIds) debriefSubmittedIds = new Set(submittedPlayerIds);
+    if (connectedPlayerIds) debriefConnectedIds = new Set(connectedPlayerIds);
 
     showView("debrief-view");
     clearTimer();
@@ -480,6 +487,23 @@
     const txt = document.getElementById("debrief-progress-text");
     if (bar) bar.style.width = pct + "%";
     if (txt) txt.textContent = `${submitted} of ${total} reports submitted`;
+    renderDebriefVoterList();
+  }
+
+  function renderDebriefVoterList() {
+    const ul = document.getElementById("debrief-voter-list");
+    if (!ul) return;
+    ul.innerHTML = "";
+    allPlayers.forEach((p, i) => {
+      const voted = debriefSubmittedIds.has(p.id);
+      const online = debriefConnectedIds.size === 0 || debriefConnectedIds.has(p.id);
+      const li = document.createElement("li");
+      if (voted) li.classList.add("voted");
+      const dotClass = online ? "dot" : "dot dot-offline";
+      const delay = online ? `style="animation-delay:${i * 0.45}s"` : "";
+      li.innerHTML = `<span class="${dotClass}" ${delay}></span><span class="voter-name">${esc(p.name)}</span>`;
+      ul.appendChild(li);
+    });
   }
 
   // SUMMARY

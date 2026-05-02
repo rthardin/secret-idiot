@@ -619,8 +619,10 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
         db.commit()
 
         all_players = db.query(Player).filter_by(room_id=room.id).all()
-        submitted = db.query(DebriefReport).filter_by(round_id=rnd.id).count()
+        submitted_reports = db.query(DebriefReport).filter_by(round_id=rnd.id).all()
+        submitted = len(submitted_reports)
         total = len(all_players)
+        submitted_player_ids = [r.player_id for r in submitted_reports]
 
         await manager.broadcast(
             room.id,
@@ -630,6 +632,8 @@ async def _handle_message(msg: dict, room: Room, player: Player, db: Session):
                     "player_name": player.name,
                     "submitted_count": submitted,
                     "total_count": total,
+                    "submitted_player_ids": submitted_player_ids,
+                    "connected_player_ids": list(manager.connected_player_ids(room.id)),
                 },
             },
         )
@@ -868,9 +872,11 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
                         )
 
             if room.current_state == RoomState.DEBRIEF_PENDING:
-                submitted = db.query(DebriefReport).filter_by(round_id=rnd.id).count()
-                payload["submitted_count"] = submitted
+                submitted_reports = db.query(DebriefReport).filter_by(round_id=rnd.id).all()
+                payload["submitted_count"] = len(submitted_reports)
                 payload["total_count"] = len(all_players)
+                payload["submitted_player_ids"] = [r.player_id for r in submitted_reports]
+                payload["connected_player_ids"] = list(manager.connected_player_ids(room_id))
 
     if room.current_state == RoomState.ROUND_SUMMARY and rnd and rnd.results_json:
         payload["results"] = rnd.results_json

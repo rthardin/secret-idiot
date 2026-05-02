@@ -696,6 +696,39 @@ select {
 .player-list li:nth-child(7) .dot { animation-delay: 2.7s;  }
 .player-list li:nth-child(8) .dot { animation-delay: 3.15s; }
 
+/* ── Debrief voter list ─────────────────────────────────────────── */
+.debrief-voter-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.debrief-voter-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  transition: opacity 0.3s ease;
+}
+.debrief-voter-list li .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  flex-shrink: 0;
+  animation: dotPulse 2.8s ease-in-out infinite;
+}
+.debrief-voter-list li .dot.dot-offline {
+  background: var(--text-dim);
+  animation: none;
+}
+.debrief-voter-list li.voted {
+  opacity: 0.5;
+}
+.debrief-voter-list li.voted .voter-name {
+  text-decoration: line-through;
+}
+
 /* ── Outcome chip pop ───────────────────────────────────────────── */
 @keyframes chipPop {
   from { opacity: 0; transform: scale(0.55); }
