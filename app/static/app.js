@@ -184,6 +184,15 @@
       </div>`;
     }).join("");
     hist.innerHTML = `<h2>Mission History</h2>${hRows}`;
+    hist.querySelectorAll(".outcome-chip").forEach((chip) => {
+      chip.style.cursor = "pointer";
+      chip.addEventListener("click", () => {
+        const parent = chip.parentNode;
+        const next = chip.nextSibling;
+        parent.removeChild(chip);
+        parent.insertBefore(chip, next);
+      });
+    });
   }
 
   // ── Views ─────────────────────────────────────────────────────────────────
