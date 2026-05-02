@@ -412,14 +412,23 @@
     clearTimer();
     setText("debrief-round-label", `Round ${roundNumber}`);
 
-    // Always unhide form content (may have been hidden from a previous round's submission)
-    document.getElementById("debrief-form-content").classList.remove("hidden");
-    buildDebriefForm();
-
-    document.getElementById("waiting-for-others").classList.add("hidden");
+    const alreadySubmitted = debriefSubmittedIds.has(PLAYER_ID);
+    const formContent = document.getElementById("debrief-form-content");
+    const waitingCard = document.getElementById("waiting-for-others");
     const btn = document.getElementById("submit-debrief-btn");
-    btn.disabled = false;
-    btn.textContent = "Submit Report";
+
+    if (alreadySubmitted) {
+      formContent.classList.add("hidden");
+      btn.disabled = true;
+      btn.textContent = "Report submitted ✓";
+      waitingCard.classList.remove("hidden");
+    } else {
+      formContent.classList.remove("hidden");
+      buildDebriefForm();
+      btn.disabled = false;
+      btn.textContent = "Submit Report";
+      waitingCard.classList.add("hidden");
+    }
 
     updateDebriefProgress(submittedCount || 0, totalCount || allPlayers.length);
   }
