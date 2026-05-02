@@ -871,6 +871,9 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
                 submitted = db.query(DebriefReport).filter_by(round_id=rnd.id).count()
                 payload["submitted_count"] = submitted
                 payload["total_count"] = len(all_players)
+                payload["has_submitted"] = bool(
+                    db.query(DebriefReport).filter_by(round_id=rnd.id, player_id=player_id).first()
+                )
 
     if room.current_state == RoomState.ROUND_SUMMARY and rnd and rnd.results_json:
         payload["results"] = rnd.results_json

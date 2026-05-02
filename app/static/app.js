@@ -91,7 +91,7 @@
         break;
       case "DEBRIEF_PENDING":
         showDebrief(p.round_number, p.submitted_count, p.total_count,
-                    p.your_role, p.your_mission, p.agent_name, p.agent_mission);
+                    p.your_role, p.your_mission, p.agent_name, p.agent_mission, p.has_submitted);
         break;
       case "ROUND_SUMMARY":
         myVote = p.has_voted || null;
@@ -396,7 +396,7 @@
   // DEBRIEF
   // role/mission params passed directly from the state sync payload so the
   // form is always built with fresh data even on reconnect.
-  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission) {
+  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission, hasSubmitted) {
     // Update globals if fresh data arrived
     if (role) { myRole = role; myMission = mission || null; }
     if (agentName) { myAgentName = agentName; myAgentMission = agentMission || null; }
@@ -405,14 +405,19 @@
     clearTimer();
     setText("debrief-round-label", `Round ${roundNumber}`);
 
-    // Always unhide form content (may have been hidden from a previous round's submission)
-    document.getElementById("debrief-form-content").classList.remove("hidden");
-    buildDebriefForm();
+    if (hasSubmitted) {
+      document.getElementById("debrief-form-content").classList.add("hidden");
+      document.getElementById("waiting-for-others").classList.remove("hidden");
+    } else {
+      // Always unhide form content (may have been hidden from a previous round's submission)
+      document.getElementById("debrief-form-content").classList.remove("hidden");
+      buildDebriefForm();
 
-    document.getElementById("waiting-for-others").classList.add("hidden");
-    const btn = document.getElementById("submit-debrief-btn");
-    btn.disabled = false;
-    btn.textContent = "Submit Report";
+      document.getElementById("waiting-for-others").classList.add("hidden");
+      const btn = document.getElementById("submit-debrief-btn");
+      btn.disabled = false;
+      btn.textContent = "Submit Report";
+    }
 
     updateDebriefProgress(submittedCount || 0, totalCount || allPlayers.length);
   }
