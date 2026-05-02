@@ -24,7 +24,7 @@
   let myVote = null;
   let prevState = null;
   let debriefSubmittedIds = new Set();
-  let debriefConnectedIds = new Set();
+  let connectedIds = new Set();
   let typedQuoteText = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
@@ -60,6 +60,7 @@
       case "VOTE_RECORDED":     onVoteRecorded(msg.payload); break;
       case "DEBRIEF_SUBMITTED":    onDebriefSubmitted(msg.payload);    break;
       case "CONNECTIONS_CHANGED":  onConnectionsChanged(msg.payload);  break;
+      case "PING":                 break;
       case "GAME_OVER":            onGameOver(msg.payload);             break;
       case "ERROR":             alert(msg.payload.message);  break;
     }
@@ -84,6 +85,7 @@
 
     switch (p.state) {
       case "LOBBY":
+        if (p.connected_player_ids) connectedIds = new Set(p.connected_player_ids);
         showLobby(allPlayers);
         break;
       case "ROUND_ACTIVE":
@@ -130,13 +132,14 @@
 
   function onDebriefSubmitted(p) {
     if (p.submitted_player_ids) debriefSubmittedIds = new Set(p.submitted_player_ids);
-    if (p.connected_player_ids) debriefConnectedIds = new Set(p.connected_player_ids);
+    if (p.connected_player_ids) connectedIds = new Set(p.connected_player_ids);
     updateDebriefProgress(p.submitted_count, p.total_count);
   }
 
   function onConnectionsChanged(p) {
-    debriefConnectedIds = new Set(p.connected_player_ids);
+    connectedIds = new Set(p.connected_player_ids);
     renderDebriefVoterList();
+    if (prevState === "LOBBY") renderPlayerList(allPlayers);
   }
 
   function onGameOver(p) {
@@ -267,7 +270,7 @@
   function renderPlayerList(players) {
     const ul = document.getElementById("player-list");
     ul.innerHTML = "";
-    players.forEach((p) => ul.appendChild(makePlayerLi(p)));
+    players.forEach((p) => ul.appendChild(makePlayerLi(p, connectedIds.size === 0 || connectedIds.has(p.id))));
 
     const msg = document.getElementById("player-count-msg");
     msg.textContent = players.length < 3
@@ -286,14 +289,15 @@
     }
   }
 
-  function makePlayerLi(player) {
+  function makePlayerLi(player, isOnline = true) {
     const li = document.createElement("li");
     const hostBadge = player.is_host ? '<span class="host-badge">Host</span>' : "";
     // Host can rename non-host players while in lobby
     const renameBtn = (IS_HOST && !player.is_host)
       ? `<button class="rename-btn" data-id="${esc(player.id)}" data-name="${esc(player.name)}" title="Rename">✏</button>`
       : "";
-    li.innerHTML = `<span class="dot"></span><span class="player-name">${esc(player.name)}</span>${hostBadge}${renameBtn}`;
+    const dotClass = isOnline ? "dot" : "dot dot-offline";
+    li.innerHTML = `<span class="${dotClass}"></span><span class="player-name">${esc(player.name)}</span>${hostBadge}${renameBtn}`;
     return li;
   }
 
@@ -412,7 +416,7 @@
     if (role) { myRole = role; myMission = mission || null; }
     if (agentName) { myAgentName = agentName; myAgentMission = agentMission || null; }
     if (submittedPlayerIds) debriefSubmittedIds = new Set(submittedPlayerIds);
-    if (connectedPlayerIds) debriefConnectedIds = new Set(connectedPlayerIds);
+    if (connectedPlayerIds) connectedIds = new Set(connectedPlayerIds);
 
     showView("debrief-view");
     clearTimer();
@@ -511,7 +515,7 @@
     ul.innerHTML = "";
     allPlayers.forEach((p, i) => {
       const voted = debriefSubmittedIds.has(p.id);
-      const online = debriefConnectedIds.size === 0 || debriefConnectedIds.has(p.id);
+      const online = connectedIds.size === 0 || connectedIds.has(p.id);
       const li = document.createElement("li");
       if (voted) li.classList.add("voted");
       const dotClass = online ? "dot" : "dot dot-offline";

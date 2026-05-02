@@ -314,17 +314,28 @@ async def websocket_endpoint(
             exclude=player_id,
         )
 
-        try:
+        async def receive_loop():
             while True:
                 raw = await websocket.receive_text()
                 msg = json.loads(raw)
-                # Re-fetch room/player from DB for each message to get fresh state
                 db.expire_all()
-                room = db.query(Room).filter_by(id=room.id).first()
-                player = db.query(Player).filter_by(id=player_id).first()
-                await _handle_message(msg, room, player, db)
-        except WebSocketDisconnect:
-            pass
+                r = db.query(Room).filter_by(id=room.id).first()
+                p = db.query(Player).filter_by(id=player_id).first()
+                await _handle_message(msg, r, p, db)
+
+        async def heartbeat():
+            while True:
+                await asyncio.sleep(20)
+                await websocket.send_text(json.dumps({"event": "PING"}))
+
+        recv_task = asyncio.create_task(receive_loop())
+        ping_task = asyncio.create_task(heartbeat())
+        try:
+            await asyncio.gather(recv_task, ping_task)
+        except Exception:
+            recv_task.cancel()
+            ping_task.cancel()
+            await asyncio.gather(recv_task, ping_task, return_exceptions=True)
     finally:
         manager.disconnect(room.id if room else "", player_id)
         if room:
@@ -837,6 +848,7 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
     payload: dict = {
         "state": room.current_state.value,
         "players": players_payload,
+        "connected_player_ids": list(manager.connected_player_ids(room_id)),
     }
 
     rnd = (
