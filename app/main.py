@@ -837,6 +837,7 @@ async def _send_state_sync(room_id: str, player_id: str, db: Session):
     payload: dict = {
         "state": room.current_state.value,
         "players": players_payload,
+        "connected_player_ids": list(manager.connected_player_ids(room_id)),
     }
 
     rnd = (
