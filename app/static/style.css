@@ -688,6 +688,7 @@ select {
   50%       { opacity: 0.4; transform: scale(0.7);  }
 }
 .player-list li .dot { animation: dotPulse 2.8s ease-in-out infinite; }
+.player-list li .dot.dot-offline { background: var(--text-dim); animation: none; }
 .player-list li:nth-child(2) .dot { animation-delay: 0.45s; }
 .player-list li:nth-child(3) .dot { animation-delay: 0.9s;  }
 .player-list li:nth-child(4) .dot { animation-delay: 1.35s; }

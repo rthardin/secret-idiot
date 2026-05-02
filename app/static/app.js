@@ -60,6 +60,7 @@
       case "VOTE_RECORDED":     onVoteRecorded(msg.payload); break;
       case "DEBRIEF_SUBMITTED":    onDebriefSubmitted(msg.payload);    break;
       case "CONNECTIONS_CHANGED":  onConnectionsChanged(msg.payload);  break;
+      case "PING":                 break;
       case "GAME_OVER":            onGameOver(msg.payload);             break;
       case "ERROR":             alert(msg.payload.message);  break;
     }
