@@ -23,6 +23,8 @@
   let lastResults = null;
   let myVote = null;
   let prevState = null;
+  let debriefSubmittedIds = new Set();
+  let debriefConnectedIds = new Set();
   let typedQuoteText = null;
 
   // ── WebSocket ─────────────────────────────────────────────────────────────
@@ -56,8 +58,9 @@
       case "PLAYER_JOINED":     /* handled via full state sync */ break;
       case "ROUND_RESULTS":     onRoundResults(msg.payload); break;
       case "VOTE_RECORDED":     onVoteRecorded(msg.payload); break;
-      case "DEBRIEF_SUBMITTED": onDebriefSubmitted(msg.payload); break;
-      case "GAME_OVER":         onGameOver(msg.payload);     break;
+      case "DEBRIEF_SUBMITTED":    onDebriefSubmitted(msg.payload);    break;
+      case "CONNECTIONS_CHANGED":  onConnectionsChanged(msg.payload);  break;
+      case "GAME_OVER":            onGameOver(msg.payload);             break;
       case "ERROR":             alert(msg.payload.message);  break;
     }
   }
@@ -91,7 +94,8 @@
         break;
       case "DEBRIEF_PENDING":
         showDebrief(p.round_number, p.submitted_count, p.total_count,
-                    p.your_role, p.your_mission, p.agent_name, p.agent_mission);
+                    p.your_role, p.your_mission, p.agent_name, p.agent_mission,
+                    p.submitted_player_ids, p.connected_player_ids);
         break;
       case "ROUND_SUMMARY":
         myVote = p.has_voted || null;
@@ -125,7 +129,14 @@
   }
 
   function onDebriefSubmitted(p) {
+    if (p.submitted_player_ids) debriefSubmittedIds = new Set(p.submitted_player_ids);
+    if (p.connected_player_ids) debriefConnectedIds = new Set(p.connected_player_ids);
     updateDebriefProgress(p.submitted_count, p.total_count);
+  }
+
+  function onConnectionsChanged(p) {
+    debriefConnectedIds = new Set(p.connected_player_ids);
+    renderDebriefVoterList();
   }
 
   function onGameOver(p) {
@@ -396,23 +407,34 @@
   // DEBRIEF
   // role/mission params passed directly from the state sync payload so the
   // form is always built with fresh data even on reconnect.
-  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission) {
+  function showDebrief(roundNumber, submittedCount, totalCount, role, mission, agentName, agentMission, submittedPlayerIds, connectedPlayerIds) {
     // Update globals if fresh data arrived
     if (role) { myRole = role; myMission = mission || null; }
     if (agentName) { myAgentName = agentName; myAgentMission = agentMission || null; }
+    if (submittedPlayerIds) debriefSubmittedIds = new Set(submittedPlayerIds);
+    if (connectedPlayerIds) debriefConnectedIds = new Set(connectedPlayerIds);
 
     showView("debrief-view");
     clearTimer();
     setText("debrief-round-label", `Round ${roundNumber}`);
 
-    // Always unhide form content (may have been hidden from a previous round's submission)
-    document.getElementById("debrief-form-content").classList.remove("hidden");
-    buildDebriefForm();
-
-    document.getElementById("waiting-for-others").classList.add("hidden");
+    const alreadySubmitted = debriefSubmittedIds.has(PLAYER_ID);
+    const formContent = document.getElementById("debrief-form-content");
+    const waitingCard = document.getElementById("waiting-for-others");
     const btn = document.getElementById("submit-debrief-btn");
-    btn.disabled = false;
-    btn.textContent = "Submit Report";
+
+    if (alreadySubmitted) {
+      formContent.classList.add("hidden");
+      btn.disabled = true;
+      btn.textContent = "Report submitted ✓";
+      waitingCard.classList.remove("hidden");
+    } else {
+      formContent.classList.remove("hidden");
+      buildDebriefForm();
+      btn.disabled = false;
+      btn.textContent = "Submit Report";
+      waitingCard.classList.add("hidden");
+    }
 
     updateDebriefProgress(submittedCount || 0, totalCount || allPlayers.length);
   }
@@ -480,6 +502,23 @@
     const txt = document.getElementById("debrief-progress-text");
     if (bar) bar.style.width = pct + "%";
     if (txt) txt.textContent = `${submitted} of ${total} reports submitted`;
+    renderDebriefVoterList();
+  }
+
+  function renderDebriefVoterList() {
+    const ul = document.getElementById("debrief-voter-list");
+    if (!ul) return;
+    ul.innerHTML = "";
+    allPlayers.forEach((p, i) => {
+      const voted = debriefSubmittedIds.has(p.id);
+      const online = debriefConnectedIds.size === 0 || debriefConnectedIds.has(p.id);
+      const li = document.createElement("li");
+      if (voted) li.classList.add("voted");
+      const dotClass = online ? "dot" : "dot dot-offline";
+      const delay = online ? `style="animation-delay:${i * 0.45}s"` : "";
+      li.innerHTML = `<span class="${dotClass}" ${delay}></span><span class="voter-name">${esc(p.name)}</span>`;
+      ul.appendChild(li);
+    });
   }
 
   // SUMMARY
