@@ -511,6 +511,15 @@
     }).join(" ");
     document.getElementById("outcomes-card").innerHTML =
       `<h2>Outcome</h2><div style="display:flex;flex-wrap:wrap;gap:8px;">${chips}</div>`;
+    document.getElementById("outcomes-card").querySelectorAll(".outcome-chip").forEach((chip) => {
+      chip.style.cursor = "pointer";
+      chip.addEventListener("click", () => {
+        const parent = chip.parentNode;
+        const next = chip.nextSibling;
+        parent.removeChild(chip);
+        parent.insertBefore(chip, next);
+      });
+    });
 
     // Burns section
     const burnsCard = document.getElementById("burns-card");
