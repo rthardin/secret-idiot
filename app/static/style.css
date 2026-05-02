@@ -466,7 +466,36 @@ select {
   border-bottom: 1px solid var(--surface2);
 }
 .leaderboard-row:last-child { border-bottom: none; }
-.leaderboard-winner { background: rgba(124,106,247,0.1); border-radius: 8px; padding-left: 8px; padding-right: 8px; margin: 0 -8px; }
+.leaderboard-winner {
+  background: rgba(124,106,247,0.1);
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin: 0 -8px;
+  position: relative;
+  overflow: hidden;
+}
+.leaderboard-winner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,255,255,0.18) 50%,
+    transparent 70%
+  );
+  animation: winnerShine 3s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes winnerShine {
+  0%   { left: -120%; }
+  40%  { left: 160%; }
+  100% { left: 160%; }
+}
 .leaderboard-winner .score { color: var(--accent); }
 .leaderboard-row .rank { color: var(--text-dim); font-size: 0.85rem; width: 24px; }
 .leaderboard-row .score { font-weight: 700; font-size: 1.1rem; color: var(--accent); }
