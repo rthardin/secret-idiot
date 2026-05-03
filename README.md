@@ -2,7 +2,7 @@
 
 You're a secret agent. Unfortunately, you're also an idiot.
 
-Secret Idiot is an ambient social deduction game for groups designed to be played in the background. One player is secretly the Agent with a covert mission: something silly, subtle, or conspicuous. Everyone else tries to figure out who it is.
+Secret Idiot is an ambient social deduction game designed to be played in the background. One player is secretly the Agent with a covert mission: something silly, subtle, or conspicuous. Everyone else tries to figure out who it is.
 
 ## How it works
 
