@@ -1,61 +1,55 @@
 [
   {
     "title": "The Antique Specialist",
-    "description": "Pick three different modern objects. You must use their \"archaic\" names at least twice each in separate conversations. (e.g., 'pocket telegraph' for phone, 'davenport' for sofa)",
+    "description": "Pick a modern object, then exclusively refer to it by its \"archaic\" name. (e.g., 'pocket telegraph' for phone, 'davenport' for sofa)",
     "difficulty": "HARD",
     "category": "verbal"
   },
   {
     "title": "The Unearned Expert",
-    "description": "Pick a boring topic (e.g., history of cardboard) and pretend to be an obsessive enthusiast for at least 90 seconds.",
+    "description": "Pick a boring topic (e.g., history of cardboard) and pretend to be an obsessive enthusiast.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
-    "title": "The 'Parental' Reflex",
-    "description": "Sincerely treat players like children (e.g., ask 'Did you wash your hands?' or 'Do you need a bathroom break?') then return to normal conversation.",
+    "title": "The Parental Reflex",
+    "description": "Pick a target, then sincerely treat that person like a child. (e.g., ask 'Did you wash your hands?' or 'Do you need a bathroom break?)",
     "difficulty": "MEDIUM",
     "category": "social"
   },
   {
     "title": "The Slow Clapper",
-    "description": "Start a slow, rhythmic clap after someone finishes a sentence or a drink.",
+    "description": "Start a slow, rhythmic clap after someone finishes a sentence, a drink, etc.",
     "difficulty": "HARD",
     "category": "social"
   },
   {
     "title": "The Sommelier of Water",
-    "description": "Swirl your water glass, sniff it deeply, and describe its 'earthy notes' to whoever is nearest.",
+    "description": "Swirl your water glass, sniff it deeply, and describe its \"earthy notes.\"",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The Echo",
-    "description": "Repeat the last three words of someone else's sentence under your breath, twice.",
+    "description": "Repeat the last three words of someone else's sentence under your breath.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
     "title": "The Safety Inspector",
-    "description": "Before sitting down, pick up the chair and inspect the bottom for a 'safety certification' mark.",
+    "description": "Before sitting down, pick up the chair and inspect the bottom for a \"safety certification\" mark.",
     "difficulty": "EASY",
     "category": "physical"
   },
   {
-    "title": "The Glitch",
-    "description": "Freeze for exactly 10 seconds whenever you hear a specific \"trigger word\" (e.g., \"thirsty,\" \"game,\" or \"food\").",
-    "difficulty": "HARD",
-    "category": "physical"
-  },
-  {
     "title": "The Corporate Pivot",
-    "description": "Use at least five corporate buzzwords (e.g., 'synergy', 'touch base', 'low-hanging fruit') in a single story.",
+    "description": "Use at least five corporate buzzwords (e.g., \"synergy\", \"touch base\", \"low-hanging fruit\") in a single story.",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The Mirror",
-    "description": "Pick a target. Every time they take a drink, you must immediately take a drink (real or invisible). Do this 5 times.",
+    "description": "Pick a target. Every time they take a drink, you must immediately take a drink (real or invisible).",
     "difficulty": "HARD",
     "category": "physical"
   },
@@ -85,7 +79,7 @@
   },
   {
     "title": "The Yoga Master",
-    "description": "Incorporate one obvious yoga pose (like 'Tree Pose') into a standing conversation for 30 seconds.",
+    "description": "Incorporate one obvious yoga pose (like \"Tree Pose\") into a standing conversation.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
@@ -97,25 +91,25 @@
   },
   {
     "title": "The Imaginary Buddy",
-    "description": "Reference a mutual 'friend' named Bartholomew and act surprised when others say they don't know him.",
+    "description": "Reference a mutual \"friend\" named Bartholomew and act surprised when others say they don't know him.",
     "difficulty": "HARD",
     "category": "verbal"
   },
   {
     "title": "The Sound Effect",
-    "description": "Make a distinct 'whoosh' or 'boop' sound every time you sit down or stand up.",
+    "description": "Make a distinct \"whoosh\" or \"boop\" sound every time you sit down or stand up.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
     "title": "The Air Quotes",
-    "description": "Use 'air quotes' around words that definitely don't require them (e.g., 'I'm going to the \"kitchen\" to get some \"water\"').",
+    "description": "Use \"air quotes\" around words that definitely don't require them (e.g., 'I'm going to the \"kitchen\" to get some \"water\"').",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The Formal Bow",
-    "description": "Give a deep, Victorian-style bow to anyone who performs a small favor for you (like passing a snack).",
+    "description": "Give a deep, Victorian-style bow to anyone who performs a small favor for you (e.g., passing a snack.)",
     "difficulty": "EASY",
     "category": "physical"
   },
@@ -144,8 +138,8 @@
     "category": "verbal"
   },
   {
-    "title": "The Hype Man",
-    "description": "Introduce a player to someone they already know as if they are a world-famous celebrity.",
+    "title": "The Networker",
+    "description": "Introduce a player to someone they already know as if they have never met.",
     "difficulty": "MEDIUM",
     "category": "social"
   },
@@ -157,7 +151,7 @@
   },
   {
     "title": "The Ghost Hunter",
-    "description": "Suddenly stop, look at a corner of the room, and ask if anyone else 'felt that cold spot.'",
+    "description": "Suddenly stop, look at a corner of the room, and ask if anyone else \"felt that cold spot.\"",
     "difficulty": "EASY",
     "category": "social"
   },
@@ -175,7 +169,7 @@
   },
   {
     "title": "The Prop Master",
-    "description": "Pick up a kitchen utensil (like a whisk or spatula) and carry it with you as a 'talking stick' for 5 minutes.",
+    "description": "Pick up a kitchen utensil (like a whisk or spatula) and carry it with you as a \"talking stick\".",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
@@ -193,13 +187,13 @@
   },
   {
     "title": "The Pocket Sand",
-    "description": "Pretend to throw 'invisible sand' at someone to 'distract them' while you walk away from a conversation.",
+    "description": "Pretend to throw \"invisible sand\" at someone to \"distract them\" while you walk away from a conversation.",
     "difficulty": "HARD",
     "category": "physical"
   },
   {
     "title": "The Fashion Police",
-    "description": "Give a player a genuine, high-energy compliment on their 'brave and avant-garde' choice of socks.",
+    "description": "Give a player a genuine, high-energy compliment on their \"brave and avant-garde\" choice of clothing.",
     "difficulty": "EASY",
     "category": "social"
   },
@@ -211,13 +205,13 @@
   },
   {
     "title": "The Fortune Teller",
-    "description": "Predict a very mundane event (e.g., 'Someone will say the word \"hungry\" in the next 3 minutes') and celebrate if it happens.",
+    "description": "Predict a very mundane event (e.g., \"Someone is going to walk through that door\") and celebrate if it happens.",
     "difficulty": "EASY",
     "category": "social"
   },
   {
     "title": "The Director",
-    "description": "Tell two people to 'reset the scene' and ask them to repeat their last interaction because the 'lighting was wrong.'",
+    "description": "Tell two people to \"reset the scene\" and ask them to repeat their last interaction.",
     "difficulty": "HARD",
     "category": "social"
   },
@@ -229,7 +223,7 @@
   },
   {
     "title": "The Historical Footnote",
-    "description": "Correct someone on a completely fabricated 'historical fact' about the house or building you are currently in.",
+    "description": "Correct someone on a completely fabricated \"historical fact\" about the house or building you are currently in.",
     "difficulty": "HARD",
     "category": "verbal"
   },
@@ -241,37 +235,37 @@
   },
   {
     "title": "The Mime",
-    "description": "Act as if you are stuck in an invisible box for exactly five seconds, then immediately stop and act normal.",
+    "description": "Act as if you are stuck in an invisible box, then immediately stop and act normal.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
     "title": "The Unsolicited Advice",
-    "description": "Give someone 'expert' advice on a better way to hold their phone or drink for 'maximum ergonomic efficiency.'",
+    "description": "Give someone \"expert\" advice on a better way to hold their phone or drink for \"maximum ergonomic efficiency.\"",
     "difficulty": "EASY",
     "category": "social"
   },
   {
     "title": "The Missing Item",
-    "description": "Ask the group if anyone has seen your 'emotional support stapler' (or another non-existent weird object).",
+    "description": "Ask the group if anyone has seen your \"emotional support stapler\" (or another non-existent weird object).",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The Aggressive Tipper",
-    "description": "Try to hand someone a coin, bill, or token as a 'tip' for a very small favor, like passing the salt.",
+    "description": "Try to hand someone a coin, bill, or token as a \"tip\" for a very small favor, like passing the salt.",
     "difficulty": "MEDIUM",
     "category": "social"
   },
   {
     "title": "The Looming Presence",
-    "description": "Stand slightly too close to a player (within their personal bubble) for 10 seconds, then walk away without a word.",
+    "description": "Stand slightly too close to a player (within their personal bubble), then walk away without a word.",
     "difficulty": "HARD",
     "category": "physical"
   },
   {
     "title": "The Inconspicuous Re-aligner",
-    "description": "Identify a set of objects (coasters, chairs, pens) and slowly, over 10 minutes, align them perfectly parallel to one another.",
+    "description": "Identify a set of objects (coasters, chairs, pens) and slowly, over several minutes, align them perfectly parallel to one another.",
     "difficulty": "HARD",
     "category": "physical"
   },
@@ -295,31 +289,31 @@
   },
   {
     "title": "The Invisible Hat",
-    "description": "When you enter or leave a conversation, perform a 'tip of the hat' gesture to the other person, despite wearing no hat.",
+    "description": "When you enter or leave a conversation, perform a \"tip of the hat\" gesture to the other person, despite wearing no hat.",
     "difficulty": "EASY",
     "category": "physical"
   },
   {
     "title": "The Standing Ovation",
-    "description": "Stand up and clap enthusiastically for 5 seconds when someone mentions they are going to get a refill or a snack.",
+    "description": "Stand up and clap enthusiastically when someone mentions they are going to get a refill or a snack.",
     "difficulty": "HARD",
     "category": "social"
   },
   {
-    "title": "The Name Game",
-    "description": "Exclusively refer to others as 'Captain' or 'Chief'.",
+    "title": "The New Recruit",
+    "description": "Pick a target, then exclusively refer to that person as \"Captain\" or \"Chief\".",
     "difficulty": "MEDIUM",
     "category": "social"
   },
   {
     "title": "The Slow-Motion High Five",
-    "description": "Initiate a high five with someone, but move your hand toward theirs in extreme slow motion (at least 10 seconds).",
+    "description": "Initiate a high five with someone, but move your hand toward theirs in extreme slow motion.",
     "difficulty": "HARD",
     "category": "physical"
   },
   {
     "title": "The Translation Error",
-    "description": "Pretend to forget the common English word for a basic object (like 'fork' or 'door') and describe it poorly until someone else names it.",
+    "description": "Pretend to forget the common English word for a basic object (like \"fork\" or \"door\") and describe it poorly until someone else names it.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
@@ -330,76 +324,64 @@
     "category": "physical"
   },
   {
-    "title": "The Hype Specialist",
-    "description": "Whenever a friend mentions a mundane task they did today, respond with 'That is absolutely legendary.'",
+    "title": "The Legend",
+    "description": "Whenever anyone mentions a mundane task they did today, respond with \"that is absolutely legendary.\"",
     "difficulty": "EASY",
     "category": "social"
   },
   {
     "title": "The Space Architect",
-    "description": "Use your hands to 'measure' the distance between two people talking, nodding thoughtfully as you do.",
+    "description": "Use your hands to \"measure\" the distance between two people talking, nodding thoughtfully as you do.",
     "difficulty": "HARD",
     "category": "physical"
   },
   {
     "title": "The Birthday Confusion",
-    "description": "Sincerely wish someone 'Happy Birthday.' When they say it's not their birthday, apologize and say, 'Oh, right, that was someone else.'",
+    "description": "Sincerely wish someone \"Happy Birthday.\" When they say it's not their birthday, apologize and say, \"Oh, right, that was someone else.\"",
     "difficulty": "EASY",
     "category": "social"
   },
   {
     "title": "The Thumb-Tuck",
-    "description": "Keep both of your thumbs tucked into your palms and hidden inside your fists for ten minutes of conversation.",
+    "description": "Keep both of your thumbs tucked into your palms and hidden inside your fists for at least ten minutes of conversation.",
     "difficulty": "HARD",
     "category": "physical"
   },
   {
     "title": "The Cinema Enthusiast",
-    "description": "Insert a quote from a famous movie into a conversation, but attribute it to the wrong movie (e.g., 'I'll be back - Star Wars').",
+    "description": "Insert a quote from a famous movie into a conversation, but attribute it to the wrong movie (e.g., \"I'll be back - Star Wars\").",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
-    "title": "The One-Inch Move",
-    "description": "Every time someone finishes speaking, move your chair or your body exactly one inch closer to them.",
-    "difficulty": "HARD",
-    "category": "physical"
-  },
-  {
     "title": "The Invisible Cobweb",
-    "description": "Suddenly swat at the air in front of your face and complain about 'the ghost spiders' in this room.",
+    "description": "Suddenly swat at the air in front of your face and complain about \"the ghost spiders\" in this room.",
     "difficulty": "EASY",
     "category": "physical"
   },
   {
-    "title": "The Synonym Specialist",
-    "description": "Replace every instance of the word 'yes' with 'indubitably' for the rest of the round.",
+    "title": "The Indubitale Man",
+    "description": "Replace every instance of the word \"yes\" with \"indubitably.\"",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
     "title": "The Dramatic Sigh",
-    "description": "Every time you take a sip of a drink, let out a long, satisfied 'Ahhhhh'.",
+    "description": "Every time you take a sip of a drink, let out a long, satisfied \"Ahhhhh\".",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The Reverse Exit",
-    "description": "Whenever you leave a room, walk backward the entire way out while maintaining eye contact with whoever is left behind.",
+    "description": "When you leave a room, walk backward the entire way.",
     "difficulty": "HARD",
     "category": "physical"
   },
   {
     "title": "The Life Coach",
-    "description": "Interrupt a story to suggest a 'breath-work exercise' and try to get the speaker to take three deep breaths with you.",
+    "description": "Interrupt a story to suggest a \"breath-work exercise\" and try to get the speaker to take three deep breaths with you.",
     "difficulty": "HARD",
     "category": "social"
-  },
-  {
-    "title": "The Question Mark",
-    "description": "End every sentence you speak for two minutes with a rising intonation, so everything sounds like a question.",
-    "difficulty": "MEDIUM",
-    "category": "verbal"
   },
   {
     "title": "The Coin Toss",
@@ -409,67 +391,49 @@
   },
   {
     "title": "The Stat Man",
-    "description": "Provide a completely made-up percentage statistic to support any point you make (e.g., 'Well, 64% of people prefer blue napkins').",
+    "description": "Provide a completely made-up percentage statistic to support any point you make (e.g., \"Well, 64% of people prefer blue napkins\").",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The Shadow",
-    "description": "Pick a 'target' player. Every time they stand up, you stand up. When they sit, you sit. Do this three times.",
+    "description": "Pick a target. Every time that person stands up, you stand up. When they sit, you sit. Do this whenever possible.",
     "difficulty": "HARD",
     "category": "social"
   },
   {
     "title": "The Air Piano",
-    "description": "Briefly play an 'invisible piano' on the table or your knees whenever there is a lull in the conversation.",
+    "description": "Briefly play an \"invisible piano\" on the table or your knees whenever there is a lull in the conversation.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
     "title": "The Acronym Mystery",
-    "description": "Start referring to the current gathering as 'The O.P.P.' and refuse to say what it stands for.",
+    "description": "Start referring to the current gathering as \"The O.P.P.,\" refusing to say what it stands for.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
-    "title": "The Formal Handshake",
-    "description": "Try to initiate a formal, three-pump handshake with someone you have already been hanging out with for over an hour.",
-    "difficulty": "MEDIUM",
-    "category": "social"
-  },
-  {
-    "title": "The Fashion Consultant",
-    "description": "Quietly tell someone their outfit is 'bold' and ask if they were inspired by 'early 90s corporate chic'.",
-    "difficulty": "EASY",
-    "category": "social"
-  },
-  {
     "title": "The Slow Blink",
-    "description": "Whenever someone asks you a question, blink both eyes very slowly (taking at least 3 seconds) before answering.",
+    "description": "When someone asks you a question, blink both eyes very slowly (taking at least 3 seconds) before answering.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
-    "title": "The Background Extra",
-    "description": "Pick a person across the room and subtly mimic their arm movements while you are talking to someone else.",
-    "difficulty": "HARD",
-    "category": "social"
-  },
-  {
     "title": "The Culinary Inventor",
-    "description": "Suggest a 'revolutionary' food combination (like pickles and peanut butter) and try to convince at least one person it’s a delicacy.",
+    "description": "Suggest a \"revolutionary\" food combination (like pickles and peanut butter) and try to convince at least one person it’s a delicacy.",
     "difficulty": "MEDIUM",
     "category": "verbal"
   },
   {
-    "title": "The 'Wait For It'",
-    "description": "Stop talking in the middle of a sentence, hold up a finger as if you're about to say something vital, wait 10 seconds, then say 'Nevermind.'",
+    "title": "The \"Wait For It\"",
+    "description": "Stop talking in the middle of a sentence, hold up a finger as if you're about to say something vital, wait 10 seconds, then say \"nevermind.\"",
     "difficulty": "MEDIUM",
     "category": "social"
   },
   {
     "title": "The Shoe Inspector",
-    "description": "Ask to see the bottom of someone's shoe to check the 'tread depth' for safety reasons.",
+    "description": "Ask to see the bottom of someone's shoe to check the \"tread depth\" for safety reasons.",
     "difficulty": "HARD",
     "category": "physical"
   },
@@ -481,55 +445,49 @@
   },
   {
     "title": "The Title Upgrade",
-    "description": "Insist on being called by a title like 'The Honorable' or 'Doctor' for a single five-minute conversation.",
+    "description": "Insist on being called by a title like \"The Honorable\" or \"Doctor.\"",
     "difficulty": "HARD",
     "category": "verbal"
   },
   {
     "title": "The Pocket Surprise",
-    "description": "Reach into your pocket, pretend to find something invisible, and then 'release it' out the nearest window or door.",
+    "description": "Reach into your pocket, pretend to find something invisible, and then \"release it\" out the nearest window or door.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
     "title": "The Mime's Drink",
-    "description": "Pour an invisible drink into your actual glass, 'sip' it, and comment on its vintage.",
+    "description": "Pour an invisible drink into your actual glass, \"sip\" it, and comment on its vintage.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
-    "title": "The Conspiracy Theorist",
-    "description": "Whisper to someone that you think the host's refrigerator is 'humming in B-flat' and ask if they think it's a code.",
+    "title": "The Perfeft Pitch",
+    "description": "Remark that you think the host's refrigerator is \"humming in B-flat.\"",
     "difficulty": "HARD",
     "category": "verbal"
   },
   {
     "title": "The Compliment Loop",
-    "description": "Give the same person the exact same compliment three times within ten minutes, acting like it's the first time each time.",
+    "description": "Give the same person the exact same compliment three times, acting like it's the first time each time.",
     "difficulty": "HARD",
     "category": "social"
   },
   {
-    "title": "The 'Old-Timey' Slang",
-    "description": "Use the word 'skedaddle' or 'malarkey' in a sentence without laughing.",
-    "difficulty": "EASY",
-    "category": "verbal"
-  },
-  {
     "title": "The Imaginary Mosquito",
-    "description": "Spend a full minute trying to 'catch' a non-existent bug in the air with your hands.",
+    "description": "Spend a full minute trying to \"catch\" a non-existent bug in the air with your hands.",
     "difficulty": "MEDIUM",
     "category": "physical"
   },
   {
     "title": "The Fact Checker",
-    "description": "Wait for someone to say a number (any number), then quickly say 'Actually, it's [that number plus one].'",
+    "description": "Wait for someone to say a number (any number), then quickly say \"Actually, it's [that number plus one].\"",
     "difficulty": "EASY",
     "category": "verbal"
   },
   {
     "title": "The High-Stakes Toast",
-    "description": "Clink your glass and propose a toast to 'the inevitable passage of time.'",
+    "description": "Clink your glass and propose a toast to \"the inevitable passage of time.\"",
     "difficulty": "MEDIUM",
     "category": "social"
   }
