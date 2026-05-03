@@ -247,6 +247,22 @@ input[type="text"] + .btn { margin-top: 8px; }
   text-align: center;
   margin-bottom: 10px;
 }
+.mission-difficulty-badge {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: rgba(255,255,255,0.08);
+  color: var(--text-dim);
+}
+.mission-difficulty-badge.diff-easy   { background: rgba(76,175,80,0.18);  color: #4caf50; }
+.mission-difficulty-badge.diff-medium { background: rgba(255,152,0,0.18);  color: #ff9800; }
+.mission-difficulty-badge.diff-hard   { background: rgba(233,69,96,0.18);  color: var(--accent2); }
+
 .mission-text {
   font-size: 1.1rem;
   font-weight: 500;
