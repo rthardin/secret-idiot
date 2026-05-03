@@ -340,20 +340,23 @@
     flap.classList.remove("flap-opening");
     stamp.classList.remove("stamp-visible");
     stamp.style.opacity = "0";
-    void overlay.offsetWidth;
 
     overlay.classList.remove("hidden");
-    envelope.classList.add("envelope-entering");
 
-    setTimeout(() => stamp.classList.add("stamp-visible"), 550);
+    // Double rAF ensures Safari commits at least one render frame after the
+    // display:none → visible transition before the animation class is applied.
+    // Same fix as the eat-evidence animation (see: iOS Safari confirm() issue).
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      envelope.classList.add("envelope-entering");
 
-    setTimeout(() => flap.classList.add("flap-opening"), 1050);
-
-    setTimeout(() => {
-      envelope.classList.add("envelope-exiting");
-      setTimeout(() => overlay.classList.add("hidden"), 400);
-      onComplete();
-    }, 1600);
+      setTimeout(() => stamp.classList.add("stamp-visible"), 550);
+      setTimeout(() => flap.classList.add("flap-opening"), 1050);
+      setTimeout(() => {
+        envelope.classList.add("envelope-exiting");
+        setTimeout(() => overlay.classList.add("hidden"), 400);
+        onComplete();
+      }, 1600);
+    }));
   }
 
   function applyRoleCard() {
