@@ -329,6 +329,36 @@
     applyRoleCard();
   }
 
+  function playEnvelopeReveal(onComplete) {
+    const overlay  = document.getElementById("envelope-overlay");
+    const envelope = overlay.querySelector(".envelope");
+    const flap     = overlay.querySelector(".envelope-flap");
+    const stamp    = overlay.querySelector(".envelope-top-secret");
+
+    // Reset state from any prior run
+    envelope.classList.remove("envelope-entering", "envelope-exiting");
+    flap.classList.remove("flap-opening");
+    stamp.classList.remove("stamp-visible");
+    stamp.style.opacity = "0";
+
+    overlay.classList.remove("hidden");
+
+    // Double rAF ensures Safari commits at least one render frame after the
+    // display:none → visible transition before the animation class is applied.
+    // Same fix as the eat-evidence animation (see: iOS Safari confirm() issue).
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      envelope.classList.add("envelope-entering");
+
+      setTimeout(() => stamp.classList.add("stamp-visible"), 550);
+      setTimeout(() => flap.classList.add("flap-opening"), 1050);
+      setTimeout(() => {
+        envelope.classList.add("envelope-exiting");
+        setTimeout(() => overlay.classList.add("hidden"), 400);
+        onComplete();
+      }, 1600);
+    }));
+  }
+
   function applyRoleCard() {
     if (!myRole) return;
 
@@ -387,10 +417,7 @@
     if (roundQuote) {
       setText("quote-heading", roundQuote.heading);
       const quoteEl = document.getElementById("quote-text");
-      if (shouldAnimate && typedQuoteText !== roundQuote.text) {
-        typedQuoteText = roundQuote.text;
-        typewriterEffect(quoteEl, roundQuote.text);
-      } else if (!shouldAnimate) {
+      if (!shouldAnimate) {
         // Pre-populate statically but don't mark as typed so the teletype
         // plays once the view is visible and the overlay is dismissed.
         setFormattedText(quoteEl, roundQuote.text);
@@ -400,11 +427,20 @@
       quoteBlock.classList.add("hidden");
     }
 
-    // Role card entrance pop — defer until view is shown and overlay is gone
     if (shouldAnimate) {
-      card.classList.remove("role-card-reveal");
-      void card.offsetWidth;
-      card.classList.add("role-card-reveal");
+      // Hide card content while envelope plays, then do the normal card pop
+      // and start the typewriter once the envelope has exited.
+      card.style.opacity = "0";
+      playEnvelopeReveal(() => {
+        card.style.opacity = "";
+        card.classList.remove("role-card-reveal");
+        void card.offsetWidth;
+        card.classList.add("role-card-reveal");
+        if (roundQuote && typedQuoteText !== roundQuote.text) {
+          typedQuoteText = roundQuote.text;
+          typewriterEffect(document.getElementById("quote-text"), roundQuote.text);
+        }
+      });
     }
   }
 
