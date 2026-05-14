@@ -13,6 +13,8 @@
   let myRole = null;
   let myMission = null;
   let myMissionTitle = null;
+  let myMissionDifficulty = null;
+  let myMissionCategory = null;
   let myAgentName = null;
   let myAgentMission = null;
   let evidenceEaten = false;
@@ -75,6 +77,8 @@
       myRole = p.your_role;
       myMission = p.your_mission || null;
       myMissionTitle = p.your_mission_title || null;
+      myMissionDifficulty = p.your_mission_difficulty || null;
+      myMissionCategory = p.your_mission_category || null;
       myAgentName = p.agent_name || null;
       myAgentMission = p.agent_mission || null;
       evidenceEaten = p.evidence_eaten || false;
@@ -118,6 +122,8 @@
     myRole = p.role;
     myMission = p.mission_text || null;
     myMissionTitle = p.mission_title || null;
+    myMissionDifficulty = p.mission_difficulty || null;
+    myMissionCategory = p.mission_category || null;
     myAgentName = p.agent_name || null;
     myAgentMission = p.agent_mission || null;
     evidenceEaten = p.evidence_eaten || false;
@@ -355,6 +361,12 @@
       if (myRole === "AGENT" && myMission) {
         setText("mission-title", myMissionTitle || "");
         setText("mission-text", myMission);
+        const diffEl = document.getElementById("mission-difficulty-badge");
+        if (diffEl) {
+          diffEl.textContent = [myMissionDifficulty, myMissionCategory].filter(Boolean).join(" · ").toLowerCase();
+          diffEl.className = `mission-difficulty-badge diff-${(myMissionDifficulty || "").toLowerCase()}`;
+          diffEl.classList.toggle("hidden", !myMissionDifficulty && !myMissionCategory);
+        }
         missionBlock.classList.remove("hidden");
         agentHint.classList.remove("hidden");
       } else if (myRole === "WITNESS") {
